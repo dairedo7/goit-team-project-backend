@@ -9,10 +9,21 @@
     "lint:fix": "eslint --fix **/*.js"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "bcrypt": "^5.0.1",
     "cors": "2.8.5",
     "cross-env": "7.0.3",
+    "dotenv": "^16.0.2",
+    "email-regexp": "^1.0.4",
     "express": "4.17.1",
-    "morgan": "1.10.0"
+    "joi": "^17.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
+    "mongodb": "^4.10.0",
+    "mongoose": "^6.6.1",
+    "morgan": "1.10.0",
+    "nanoid": "^4.0.0",
+    "nodemailer": "^6.7.8"
   },
   "devDependencies": {
     "eslint": "7.19.0",
@@ -22,5 +33,17 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "5.2.0",
     "nodemon": "2.0.15"
-  }
+  },
+  "description": "Backend Team Project - Group n.43, GO-IT",
+  "main": ".eslintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goitacademy/nodejs-homework-template.git"
+  },
+  "author": "Team 1 - GO-IT-43",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goitacademy/nodejs-homework-template/issues"
+  },
+  "homepage": "https://github.com/goitacademy/nodejs-homework-template#readme"
 }

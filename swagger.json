@@ -1,0 +1,23 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "version": "2.0.0",
+        "title": "BookRead API docs",
+        "description": "API documentation for GoIT project 'BookRead'",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "producers": [
+        "application/json"
+    ],
+    "servers": [
+        {
+            "url": "http://localhost:3010/api-docs"
+        }
+    ]
+}

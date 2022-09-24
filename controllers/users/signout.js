@@ -1,7 +1,7 @@
 const {User} = require('../../models');
 const { Unauthorized } = require("http-errors");
 
-const logout = async (req, res) => {
+const signOut = async (req, res) => {
     const { _id } = req.user;
 
     if (!_id) {
@@ -12,4 +12,4 @@ const logout = async (req, res) => {
     res.status(204).json();
 }
 
-module.exports = logout;
+module.exports = signOut;

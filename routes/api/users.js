@@ -13,7 +13,7 @@ router.post("/signup", validation(joiUserSchema), wrapper(signUp));
 
 router.post("/signin", validation(joiLoginSchema), wrapper(signIn));
 
-router.get("/logout", auth, wrapper(signOut));
+router.get("/signout", auth, wrapper(signOut));
 
 
 module.exports = router;

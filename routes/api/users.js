@@ -1,5 +1,5 @@
 const express = require('express')
-const {signUp, signIn, signOut} = require('../../controllers');
+const {signUp, signIn, signOut, getCurrent} = require('../../controllers');
 const {validation, wrapper, auth} = require('../../middlewares');
 
 const {
@@ -15,5 +15,6 @@ router.post("/signin", validation(joiLoginSchema), wrapper(signIn));
 
 router.get("/signout", auth, wrapper(signOut));
 
+router.get("/current", auth, wrapper(getCurrent));
 
 module.exports = router;

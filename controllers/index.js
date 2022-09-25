@@ -1,13 +1,19 @@
-const signUp = require('./users/signup');
-const signIn = require('./users/signin');
-const signOut = require('./users/signout');
-const getCurrent = require('./users/getCurrent')
-const getPlanningInfo = require("./users/getPlanningInfo")
+
+const signUp = require("./users/signup");
+const signIn = require("./users/signin");
+const signOut = require("./users/signout");
+const authController = require("./auth/auth.controller");
+const getCurrent = require('./users/getCurrent');
+const getPlanningInfo = require("./users/getPlanningInfo");
+const startPlan = require('./users/startPlan');
 
 module.exports = {
-    signUp,
-    signIn,
-    signOut,
-    getCurrent,
-    getPlanningInfo
-}
+  signUp,
+  signIn,
+  signOut,
+  authController,
+  getCurrent,
+  getPlanningInfo,
+  startPlan
+};
+

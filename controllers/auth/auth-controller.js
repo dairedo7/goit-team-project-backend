@@ -4,12 +4,12 @@ const axios = require("axios");
 
 require("dotenv").config();
 
-console.log(process.env, "IS PROCESS ENV");
+// console.log(process.env.FRONTEND_URL, "is the one");
 
 exports.googleAuth = async (req, res) => {
   const stringifiedParams = queryString.stringify({
     client_id: process.env.GOOGLE_CLIENT_ID,
-    redirect_uri: `${process.env.DB_HOST}/auth/google-redirect`,
+    redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
@@ -34,7 +34,7 @@ exports.googleRedirect = async (req, res) => {
     data: {
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${process.env.DB_HOST}/auth/google-redirect`,
+      redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
       grant_type: "authorization_code",
       code,
     },
@@ -46,10 +46,7 @@ exports.googleRedirect = async (req, res) => {
       Authorization: `Bearer ${tokenData.data.access_token}`,
     },
   });
-  // userData.data.email
-  // ...
-  // ...
-  // ...
+
   return res.redirect(
     `${process.env.FRONTEND_URL}?email=${userData.data.email}`
   );

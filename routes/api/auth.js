@@ -4,9 +4,10 @@ const wrapper = require("../../middlewares/wrapper");
 const {
   googleAuth,
   googleRedirect,
-} = require("../../controllers/auth/auth.controller");
+} = require("../../controllers/auth/auth-controller");
 
 const router = Router();
+console.log(router);
 
 router.get("/google", wrapper(googleAuth));
 router.get("/google-redirect", wrapper(googleRedirect));

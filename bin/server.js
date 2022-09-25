@@ -1,11 +1,13 @@
 const path = require("path");
 const express = require("express");
-const { authRouter } = require("../routes/api/auth");
+const authRouter = require("../routes/api/auth");
+
 require("dotenv").config({ path: path.join(__dirname, "../../.env") });
 
 module.exports = class Server {
   constructor() {
     this.app = express();
+    console.log(authRouter);
   }
 
   async start() {
@@ -32,7 +34,7 @@ module.exports = class Server {
   }
 
   initListening() {
-    this.app.listen((process.env.PORT = 3010), () =>
+    this.app.listen((process.env.PORT = 3030), () =>
       console.log("Started listening on port", process.env.PORT)
     );
   }

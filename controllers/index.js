@@ -1,11 +1,13 @@
-const signUp = require("./auth/signup");
-const signIn = require("./auth/signin");
-const signOut = require("./auth/signout");
-const getCurrent = require("./users/getCurrent");
+const signUp = require('./users/signup');
+const signIn = require('./users/signin');
+const signOut = require('./users/signout');
+const getCurrent = require('./users/getCurrent');
+const startPlan = require('./users/startPlan')
 
 module.exports = {
-  signUp,
-  signIn,
-  signOut,
-  getCurrent,
-};
+    signUp,
+    signIn,
+    signOut,
+    getCurrent,
+    startPlan,
+}

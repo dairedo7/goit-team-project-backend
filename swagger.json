@@ -2,8 +2,8 @@
     "openapi": "3.0.1",
     "info": {
         "version": "2.0.0",
-        "title": "BookRead API docs",
-        "description": "API documentation for GoIT project 'BookRead'. [Backend github repository](https://github.com/dairedo7/goit-team-project-backend)",
+        "title": "BooksReading API docs",
+        "description": "API documentation for GoIT project 'BooksReading'. [Backend github repository](https://github.com/dairedo7/goit-team-project-backend)",
         "license": {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
@@ -22,7 +22,7 @@
     ],
     "tags": [
         {
-            "name": "Users",
+            "name": "Auth",
             "description": "Authorization endpoints"
         },
         {
@@ -35,10 +35,10 @@
         }
     ],
     "paths": {
-        "/api/users/signup": {
+        "/api/auth/signup": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "summary": "User registration",
                 "parameters": [],
@@ -75,10 +75,10 @@
                 }
             }
         },
-        "/api/users/signin": {
+        "/api/auth/signin": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "summary": "User authentication",
                 "parameters": [],
@@ -115,10 +115,10 @@
                 }
             }
         },
-        "/api/users/signout": {
+        "/api/auth/signout": {
             "get": {
                 "tags": [
-                    "Users"
+                    "Auth"
                 ],
                 "summary": "Signout",
                 "security": [

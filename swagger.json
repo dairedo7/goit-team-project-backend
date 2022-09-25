@@ -3,7 +3,7 @@
     "info": {
         "version": "2.0.0",
         "title": "BookRead API docs",
-        "description": "API documentation for GoIT project 'BookRead'",
+        "description": "API documentation for GoIT project 'BookRead'. [Backend github repository](https://github.com/dairedo7/goit-team-project-backend)",
         "license": {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
@@ -19,5 +19,213 @@
         {
             "url": "http://localhost:3010/api-docs"
         }
-    ]
+    ],
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Authorization endpoints"
+        },
+        {
+            "name": "Book",
+            "description": "Book endpoints"
+        },
+        {
+            "name": "Planning",
+            "description": "Planning endpoints"
+        }
+    ],
+    "paths": {
+        "/api/users/signup": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User registration",
+                "parameters": [],
+                "requestBody": {
+                    "description": "Registration's object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignupRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignupResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid request body)",
+                        "content": {}
+                    },
+                    "409": {
+                        "description": "Provided email already exists",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/api/users/signin": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User authentication",
+                "parameters": [],
+                "requestBody": {
+                    "description": "Authentication's object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SigninRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SigninResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid request body)",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Email doesn't exist / Password is wrong",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/api/users/signout": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Signout",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "No token provided",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Invalid user / Invalid session",
+                        "content": {}
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SignupRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "User's email",
+                        "format": "email",
+                        "example": "example@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "User's password",
+                        "example": "qwerty123"
+                    }
+                }
+            },
+            "SignupResponse": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "User's email",
+                        "format": "email",
+                        "example": "example@gmail.com"
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "User's id",
+                        "example": "507f1f77bcf86cd799439011"
+                    }
+                }
+            },
+            "SigninRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "User's email",
+                        "example": "example@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "User's password",
+                        "example": "qwerty123"
+                    }
+                }
+            },
+            "SigninResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "description": "Session's access token (needed for all requests)",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "email": {
+                                "type": "string",
+                                "description": "User's email",
+                                "format": "email",
+                                "example": "example@gmail.com"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

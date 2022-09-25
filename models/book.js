@@ -1,5 +1,5 @@
 const { Schema, SchemaTypes, model } = require("mongoose");
-const { bookStatus } = require("../../helpers/constants");
+const { bookStatus } = require("../helpers/constants");
 
 const yearRegex = /(1[0-9]{3}|20[0-1][0-9]|202[0-2])/;
 

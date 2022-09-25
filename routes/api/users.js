@@ -1,11 +1,9 @@
-const express = require('express')
-const {signUp, signIn, signOut, getCurrent, startPlan} = require('../../controllers');
-const {validation, wrapper, auth} = require('../../middlewares');
+const express = require("express");
+const { signUp, signIn, signOut } = require("../../controllers");
+const { getCurrent } = require("../../controllers");
+const { validation, wrapper, auth } = require("../../middlewares");
 
-const {
-  joiLoginSchema,
-  joiUserSchema,
-} = require("../../models");
+const { joiLoginSchema, joiUserSchema } = require("../../models");
 
 const router = express.Router();
 

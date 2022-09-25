@@ -1,41 +1,20 @@
-const path = require("path");
-const express = require("express");
-const authRouter = require("../routes/api/auth");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-require("dotenv").config({ path: path.join(__dirname, "../../.env") });
+const app = require("../app");
 
-module.exports = class Server {
-  constructor() {
-    this.app = express();
-    console.log(authRouter);
-  }
+const { DB_HOST, PORT = 3030 } = process.env;
 
-  async start() {
-    this.initRoutes();
-    this.initErrorHandling();
-    this.initListening();
-  }
-
-  initRoutes() {
-    this.app.use("/auth", authRouter);
-    this.app.use("/link", (req, res) => {
-      res.sendFile(path.join(__dirname, "../public/link.html"));
-    });
-  }
-
-  initErrorHandling() {
-    this.app.use((err, req, res, next) => {
-      let status = 500;
-      if (err.response) {
-        status = err.response.status;
-      }
-      return res.status(status).send(err.message);
-    });
-  }
-
-  initListening() {
-    this.app.listen((process.env.PORT = 3030), () =>
-      console.log("Started listening on port", process.env.PORT)
-    );
-  }
-};
+mongoose
+  .connect(DB_HOST, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    app.listen(PORT);
+    console.log("Database connection successful");
+  })
+  .catch((error) => {
+    console.log(error.message);
+    process.exit(1);
+  });

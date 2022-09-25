@@ -1,9 +1,9 @@
-const signUp = require("./users/signup");
-const signIn = require("./users/signin");
-const signOut = require("./users/signout");
-const authController = require("./auth/auth.controller");
-const getCurrent = require('./users/getCurrent');
-const startPlan = require('./users/startPlan')
+const signUp = require("./auth/signup");
+const signIn = require("./auth/signin");
+const signOut = require("./auth/signout");
+const authController = require("./auth/auth-controller");
+const getCurrent = require("./users/getCurrent");
+const startPlan = require("./users/startPlan");
 
 module.exports = {
   signUp,
@@ -11,5 +11,5 @@ module.exports = {
   signOut,
   authController,
   getCurrent,
-  startPlan
+  startPlan,
 };

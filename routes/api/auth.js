@@ -1,13 +1,22 @@
-const { Router } = require("express");
+const express = require("express");
+const { signUp, signIn, signOut } = require("../../controllers");
+const { validation, wrapper, auth } = require("../../middlewares");
 
-const wrapper = require("../../middlewares/wrapper");
+const { joiLoginSchema, joiUserSchema } = require("../../models");
+
 const {
   googleAuth,
   googleRedirect,
 } = require("../../controllers/auth/auth-controller");
 
-const router = Router();
+const router = express.Router();
 console.log(router);
+
+router.post("/signup", validation(joiUserSchema), wrapper(signUp));
+
+router.post("/signin", validation(joiLoginSchema), wrapper(signIn));
+
+router.get("/signout", auth, wrapper(signOut));
 
 router.get("/google", wrapper(googleAuth));
 router.get("/google-redirect", wrapper(googleRedirect));

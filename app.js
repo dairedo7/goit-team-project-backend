@@ -3,7 +3,8 @@ const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
 
-const usersRouter = require("./routes/api/users");
+const apiAuth = require("./routes/api/auth");
+const apiUsers = require("./routes/api/users");
 
 const app = express();
 
@@ -13,8 +14,8 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/users", usersRouter);
-// app.use("/api/auth");
+app.use("/auth", apiAuth);
+app.use("/user", apiUsers);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

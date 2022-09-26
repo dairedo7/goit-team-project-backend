@@ -3,6 +3,7 @@ const signIn = require("./auth/signin");
 const signOut = require("./auth/signout");
 const authController = require("./auth/auth-controller");
 const getCurrent = require("./users/getCurrent");
+const getPlanningInfo = require("./users/getPlanningInfo");
 const startPlan = require("./users/startPlan");
 
 module.exports = {
@@ -11,5 +12,6 @@ module.exports = {
   signOut,
   authController,
   getCurrent,
-  startPlan,
+  getPlanningInfo,
+  startPlan
 };

@@ -26,7 +26,7 @@
             "description": "Authorization endpoints"
         },
         {
-            "name": "Book",
+            "name": "Books",
             "description": "Book endpoints"
         },
         {
@@ -156,7 +156,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Google authentication. WARNING: Works only for sign-in, after registered on front-end (if you're writing your back-end for a SPECIFIC front-end, then you can configure it right to work both for sign-up & sign-in)",
+                "summary": "Google authentication",
                 "responses": {
                     "200": {
                         "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user/books",
@@ -169,7 +169,7 @@
                 }
             }
         },
-        "/book": {
+        "/books": {
             "post": {
                 "tags": [
                     "Book"

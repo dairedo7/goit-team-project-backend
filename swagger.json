@@ -17,7 +17,7 @@
     ],
     "servers": [
         {
-            "url": "http://localhost:3030/api-docs"
+            "url": "http://localhost:3030/"
         }
     ],
     "tags": [

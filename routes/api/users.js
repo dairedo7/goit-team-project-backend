@@ -1,7 +1,6 @@
-
 const express = require("express");
 const { getCurrent } = require("../../controllers");
-const getPlanningInfo = require('../../controllers');
+const getPlanningInfo = require("../../controllers");
 const { wrapper, auth } = require("../../middlewares");
 
 const { startPlan } = require("../../controllers/users/startPlan");

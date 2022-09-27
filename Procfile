@@ -1,1 +1,1 @@
-web: node NODE_ENV=production node ./bin/server.js
+web: node cross-env

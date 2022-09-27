@@ -172,7 +172,7 @@
         "/books": {
             "post": {
                 "tags": [
-                    "Book"
+                    "Books"
                 ],
                 "summary": "Add new book to library",
                 "security": [
@@ -213,6 +213,108 @@
                     },
                     "404": {
                         "description": "Invalid user / Invalid session",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/books/bookId": {
+            "put": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Update a book",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "bookId",
+                        "in": "path",
+                        "description": "Book's id ('id' field in book's object)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Book object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBookRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateBookResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid id) / No token provided",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Book not found / Invalid user / Invalid session",
+                        "content": {}
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Remove a book",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "bookId",
+                        "required": true,
+                        "description": "Book's id",
+                        "schema": {
+                            "type": "String"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RemoveBook"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid request body)",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Book not found",
                         "content": {}
                     }
                 }
@@ -394,12 +496,12 @@
                         "example": "J. K. Rowling"
                     },
                     "year": {
-                        "type": "integer",
+                        "type": "number",
                         "description": "Book's year",
                         "example": "1997"
                     },
                     "totalPages": {
-                        "type": "integer",
+                        "type": "number",
                         "description": "Number of pages in a book",
                         "example": "123"
                     },
@@ -409,12 +511,54 @@
                         "example": ""
                     },
                     "rating": {
-                        "type": "integer",
+                        "type": "string",
                         "description": "rating",
-                        "minimum": 0,
-                        "maximum": 5,
-                        "example": null
+                        "example": "5"
                     }
+                }
+            },
+            "UpdateBookRequest": {
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "resume": {
+                        "type": "string",
+                        "description": "Book's review",
+                        "example": "It's a great book"
+                    },
+                    "rating": {
+                        "type": "string",
+                        "description": "Book's rating",
+                        "example": "5"
+                    }
+                }
+            },
+            "UpdateBookResponse": {
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Book's id",
+                        "example": "608170ac715ef491300d3d2e"
+                    },
+                    "resume": {
+                        "type": "string",
+                        "description": "Book's review",
+                        "example": "Harry Potter is a good book"
+                    },
+                    "rating": {
+                        "type": "string",
+                        "description": "Book's rating",
+                        "example": "5"
+                    }
+                }
+            },
+            "RemoveBook": {
+                "type": "object",
+                "description": "delete",
+                "example": {
+                    "message": "Success delete"
                 }
             },
             "GetCurrent": {
@@ -544,7 +688,7 @@
                             "rating": {
                                 "type": "sting",
                                 "description": "Book's rating",
-                                "example": "null"
+                                "example": "5"
                             },
                             "_id": {
                                 "type": "string",

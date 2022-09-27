@@ -1,6 +1,6 @@
-const Joi = require('joi');
-const { Schema, SchemaTypes, model } = require('mongoose');
-const { bookStatus } = require('../helpers/constants');
+const Joi = require("joi");
+const { Schema, SchemaTypes, model } = require("mongoose");
+const { bookStatus } = require("../helpers/constants");
 
 // const yearRegex = /(1[0-9]{3}|20[0-1][0-9]|202[0-2])/;
 
@@ -10,26 +10,26 @@ const bookSchema = new Schema(
       type: String,
       minLength: 1,
       maxLength: 30,
-      required: [true, 'Set title for book'],
+      required: [true, "Set title for book"],
     },
     author: {
       type: String,
       minLength: 2,
       maxLength: 30,
-      required: [true, 'Set author for book'],
+      required: [true, "Set author for book"],
     },
     year: {
       type: Number,
-      required: [true, 'Set year for book'],
+      required: [true, "Set year for book"],
     },
     totalPages: {
       type: Number,
-      required: [true, 'Set total pages for book'],
+      required: [true, "Set total pages for book"],
     },
     readPages: {
       type: Number,
       default: 0,
-      required: [true, 'Set read pages for book'],
+      required: [true, "Set read pages for book"],
     },
     rating: {
       type: Number,
@@ -52,10 +52,10 @@ const bookSchema = new Schema(
     },
     user: {
       type: SchemaTypes.ObjectId,
-      ref: 'user',
+      ref: "user",
     },
   },
-  { versionKey: false, timestamps: true },
+  { versionKey: false, timestamps: true }
 );
 
 const joiBookSchema = Joi.object({
@@ -70,13 +70,22 @@ const joiBookSchema = Joi.object({
     .valueOf(...[0, 1, 2, 3, 4, 5]),
   resume: Joi.string().max(300),
   status: Joi.string().valueOf(
-    ...[bookStatus.PLAN, bookStatus.READ, bookStatus.DONE],
+    ...[bookStatus.PLAN, bookStatus.READ, bookStatus.DONE]
   ),
 });
 
-const Book = model('book', bookSchema);
+const joiBookUpdateSchema = Joi.object({
+  rating: Joi.number()
+    .min(0)
+    .max(5)
+    .valueOf(...[0, 1, 2, 3, 4, 5]),
+  resume: Joi.string().max(300).required(),
+});
+
+const Book = model("book", bookSchema);
 
 module.exports = {
   joiBookSchema,
+  joiBookUpdateSchema,
   Book,
 };

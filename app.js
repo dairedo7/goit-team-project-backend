@@ -1,26 +1,26 @@
-const express = require('express');
-const logger = require('morgan');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const logger = require("morgan");
+const cors = require("cors");
+require("dotenv").config();
 
-const apiAuth = require('./routes/api/auth');
-const apiUsers = require('./routes/api/users');
-const apiBooks = require('./routes/api/books');
+const apiAuth = require("./routes/api/auth");
+const apiUsers = require("./routes/api/users");
+const apiBooks = require("./routes/api/books");
 
 const app = express();
 
-const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
+const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use('/auth', apiAuth);
-app.use('/user', apiUsers);
-app.use('/books', apiBooks);
+app.use("/auth", apiAuth);
+app.use("/user", apiUsers);
+app.use("/book", apiBooks);
 
 app.use((req, res) => {
-  res.status(404).json({ message: 'Not found' });
+  res.status(404).json({ message: "Not found" });
 });
 
 app.use((err, req, res, next) => {

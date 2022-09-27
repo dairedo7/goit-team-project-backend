@@ -5,6 +5,7 @@ require("dotenv").config();
 
 const apiAuth = require("./routes/api/auth");
 const apiUsers = require("./routes/api/users");
+const apiBooks = require("./routes/api/books");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/auth", apiAuth);
 app.use("/user", apiUsers);
+app.use("/book", apiBooks);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

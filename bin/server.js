@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const app = require("../app");
 
-const { DB_HOST, PORT = 3030 } = process.env;
+const { DB_HOST } = process.env;
 
 mongoose
   .connect(DB_HOST, {
@@ -11,7 +11,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(PORT);
+    app.listen((process.env.PORT = 3030));
     console.log("Database connection successful");
   })
   .catch((error) => {

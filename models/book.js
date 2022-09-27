@@ -32,11 +32,9 @@ const bookSchema = new Schema(
       required: [true, "Set read pages for book"],
     },
     rating: {
-      type: Number,
-      enum: [0, 1, 2, 3, 4, 5],
-      min: 0,
-      max: 5,
-      default: 0,
+      type: String,
+      enum: ["1", "2", "3", "4", "5"],
+      default: "1",
     },
     resume: {
       type: String,

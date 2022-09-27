@@ -9,11 +9,10 @@
     "lint:fix": "eslint --fix **/*.js"
   },
   "dependencies": {
-    "bson-objectid": "^2.0.3",
-    "uuid": "^8.3.2",
     "@sendgrid/mail": "^7.7.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
+    "bson-objectid": "^2.0.3",
     "cors": "2.8.5",
     "dotenv": "^16.0.2",
     "email-regexp": "^1.0.4",
@@ -28,7 +27,8 @@
     "nanoid": "^4.0.0",
     "nodemailer": "^6.7.8",
     "query-string": "^7.1.1",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-ui-express": "^4.5.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

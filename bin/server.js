@@ -3,7 +3,7 @@ require("dotenv").config();
 const path = require("path");
 const app = require("../app");
 
-const { DB_HOST } = process.env;
+const { DB_HOST, PORT = 3000 } = process.env;
 
 mongoose
   .connect(DB_HOST, {
@@ -11,7 +11,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(process.env.PORT || 5000);
+    app.listen(PORT);
     app.use("/link", (req, res) => {
       res.sendFile(path.join(__dirname, "../../public/link.html"));
     });

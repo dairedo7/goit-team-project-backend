@@ -1,1 +1,1 @@
-web: node cross-env
+web: node app.js

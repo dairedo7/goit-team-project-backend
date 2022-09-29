@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const path = require("path");
+// const path = require("path");
 const app = require("../app");
 
 const { DB_HOST } = process.env;
@@ -11,6 +11,10 @@ const port = process.env.PORT || 8000;
 // View engine
 app.set('view engine', 'ejs')
 
+// Render the starting page
+app.get('/', function(req, res)  {
+  res.render('views/link')
+})
 
 
 mongoose
@@ -24,9 +28,7 @@ mongoose
     // app.use("/link", (req, res) => {
     //   res.sendFile(path.join(__dirname, "../../public/link.html"));
     // });
-    app.get('/', function(req, res)  {
-      res.render('public/link')
-    })
+
     console.log("Database connection successful");
   })
   .catch((error) => {

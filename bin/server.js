@@ -7,6 +7,12 @@ const { DB_HOST } = process.env;
 
 const port = process.env.PORT || 8000;
 
+
+// View engine
+app.set('view engine', 'ejs')
+
+
+
 mongoose
   .connect(DB_HOST, {
     useNewUrlParser: true,
@@ -15,9 +21,12 @@ mongoose
   .then(() => {
     console.log(port)
     app.listen(port || 3000);
-    app.use("/link", (req, res) => {
-      res.sendFile(path.join(__dirname, "../../public/link.html"));
-    });
+    // app.use("/link", (req, res) => {
+    //   res.sendFile(path.join(__dirname, "../../public/link.html"));
+    // });
+    app.get('/', function(req, res)  {
+      res.render('public/link')
+    })
     console.log("Database connection successful");
   })
   .catch((error) => {

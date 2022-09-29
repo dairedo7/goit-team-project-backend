@@ -62,10 +62,7 @@ const joiBookSchema = Joi.object({
   year: Joi.number().required(),
   totalPages: Joi.number().required(),
   readPages: Joi.number().required(),
-  rating: Joi.number()
-    .min(0)
-    .max(5)
-    .valueOf(...[0, 1, 2, 3, 4, 5]),
+  rating: Joi.string().valueOf(...[0, 1, 2, 3, 4, 5]),
   resume: Joi.string().max(300),
   status: Joi.string().valueOf(
     ...[bookStatus.PLAN, bookStatus.READ, bookStatus.DONE]
@@ -73,10 +70,7 @@ const joiBookSchema = Joi.object({
 });
 
 const joiBookUpdateSchema = Joi.object({
-  rating: Joi.number()
-    .min(0)
-    .max(5)
-    .valueOf(...[0, 1, 2, 3, 4, 5]),
+  rating: Joi.string().valueOf(...[0, 1, 2, 3, 4, 5]),
   resume: Joi.string().max(300).required(),
 });
 

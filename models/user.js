@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, SchemaTypes, model } = require("mongoose");
 const Joi = require("joi");
 
 const emailRegexp = /^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/;
@@ -23,6 +23,17 @@ const userSignUpSchema = Schema(
       type: String,
       required: [true, "Name is required"],
       unique: true,
+    },
+    books: [
+      {
+        type: SchemaTypes.ObjectId,
+        ref: "book",
+      },
+    ],
+    planning: {
+      type: SchemaTypes.ObjectId,
+      default: null,
+      ref: "planning",
     },
   },
   { versionKey: false, timestamps: true }

@@ -1,11 +1,11 @@
 const addBook = require('./addBook');
 const getBooks = require('./getBooks');
 const updateBook = require('./updateBook');
-const deleteBook = require('./deleteBook');
+const removeBook = require('./removeBook');
 
 module.exports = {
   addBook,
   getBooks,
   updateBook,
-  deleteBook,
+  removeBook,
 };

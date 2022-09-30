@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { Schema, SchemaTypes, model } = require("mongoose");
+const { Schema, model } = require("mongoose");
 const { bookStatus } = require("../helpers/constants");
 
 // const yearRegex = /(1[0-9]{3}|20[0-1][0-9]|202[0-2])/;
@@ -47,10 +47,6 @@ const bookSchema = new Schema(
         message: "This subscription isn't allowed",
       },
       default: bookStatus.PLAN,
-    },
-    user: {
-      type: SchemaTypes.ObjectId,
-      ref: "user",
     },
   },
   { versionKey: false, timestamps: true }

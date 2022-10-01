@@ -283,13 +283,11 @@
                 "summary": "Remove a book",
                 "parameters": [
                     {
-                        "in": "path",
                         "name": "bookId",
+                        "in": "path",
+                        "description": "Book's id ('id' field in book's object)",
                         "required": true,
-                        "description": "Book's id",
-                        "schema": {
-                            "type": "String"
-                        }
+                        "type": "string"
                     }
                 ],
                 "security": [

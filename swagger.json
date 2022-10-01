@@ -221,7 +221,7 @@
                 }
             }
         },
-        "/book/bookId": {
+        "/book/{bookId}": {
             "put": {
                 "tags": [
                     "Book"
@@ -235,7 +235,7 @@
                 "parameters": [
                     {
                         "name": "bookId",
-                        "in": "put",
+                        "in": "path",
                         "description": "Book's id ('id' field in book's object)",
                         "required": true,
                         "type": "string"
@@ -681,7 +681,7 @@
                 "required": [],
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "bookId": {
                         "type": "string",
                         "description": "Book's id",
                         "example": "608170ac715ef491300d3d2e"

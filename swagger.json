@@ -29,7 +29,7 @@
             "description": "Authorization endpoints"
         },
         {
-            "name": "Books",
+            "name": "Book",
             "description": "Book endpoints"
         },
         {
@@ -172,10 +172,10 @@
                 }
             }
         },
-        "/books": {
+        "/book": {
             "post": {
                 "tags": [
-                    "Books"
+                    "Book"
                 ],
                 "summary": "Add new book to library",
                 "security": [
@@ -221,10 +221,10 @@
                 }
             }
         },
-        "/books/bookId": {
+        "/book/bookId": {
             "put": {
                 "tags": [
-                    "Books"
+                    "Book"
                 ],
                 "summary": "Update a book",
                 "security": [
@@ -235,7 +235,7 @@
                 "parameters": [
                     {
                         "name": "bookId",
-                        "in": "path",
+                        "in": "put",
                         "description": "Book's id ('id' field in book's object)",
                         "required": true,
                         "type": "string"
@@ -278,7 +278,7 @@
             },
             "delete": {
                 "tags": [
-                    "Books"
+                    "Book"
                 ],
                 "summary": "Remove a book",
                 "parameters": [
@@ -596,7 +596,8 @@
                     "title",
                     "author",
                     "year",
-                    "totalPages"
+                    "totalPages",
+                    "readPages"
                 ],
                 "type": "object",
                 "properties": {
@@ -619,6 +620,10 @@
                         "type": "number",
                         "description": "Book's total amount of pages",
                         "example": "123"
+                    },
+                    "readPages": {
+                        "type": "number",
+                        "description": "Book's number of pages read"
                     }
                 }
             },
@@ -633,7 +638,7 @@
                     "title": {
                         "type": "string",
                         "description": "Book's title",
-                        "example": "Harry Porter"
+                        "example": "Harry Potter"
                     },
                     "author": {
                         "type": "string",
@@ -647,18 +652,12 @@
                     },
                     "totalPages": {
                         "type": "number",
-                        "description": "Number of pages in a book",
+                        "description": "Book's total amount of pages",
                         "example": "123"
                     },
-                    "resume": {
-                        "type": "string",
-                        "description": "resume",
-                        "example": ""
-                    },
-                    "rating": {
-                        "type": "string",
-                        "description": "rating",
-                        "example": "5"
+                    "readPages": {
+                        "type": "number",
+                        "description": "Book's number of pages read"
                     }
                 }
             },
@@ -690,7 +689,7 @@
                     "resume": {
                         "type": "string",
                         "description": "Book's review",
-                        "example": "Harry Potter is a good book"
+                        "example": "It's a great book"
                     },
                     "rating": {
                         "type": "string",

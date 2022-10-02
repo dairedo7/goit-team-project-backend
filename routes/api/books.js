@@ -7,7 +7,7 @@ const { joiBookSchema, joiBookUpdateSchema } = require("../../models");
 
 const router = express.Router();
 
-router.get("/", wrapper(ctrl.getBooks));
+router.get("/", auth, wrapper(ctrl.getBooks));
 
 router.post("/", auth, validation(joiBookSchema), wrapper(ctrl.addBook));
 

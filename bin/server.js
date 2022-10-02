@@ -3,7 +3,7 @@ require("dotenv").config();
 // const path = require("path");
 const app = require("../app");
 
-const { DB_HOST } = process.env;
+const { DB_HOST='mongodb+srv://Igor:22garik22@cluster0.rycybld.mongodb.net/contacts_js?retryWrites=true&w=majority' } = process.env;
 
 const port = process.env.PORT || 8000;
 

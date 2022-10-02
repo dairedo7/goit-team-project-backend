@@ -1,20 +1,20 @@
 const { Planning, Book } = require('../../models');
-const {DateTime} = require('luxon');
+const { DateTime } = require('luxon');
 
 const startPlan = async (req, res) => {
-  const { startDate, endDate, books } = req.body;
+  const { startDate, endDate, books = [] } = req.body;
   const user = req.user;
-  const startDateArr = startDate.split("-");
-  const endDateArr = endDate.split("-");
+  const startDateArr = startDate.split("");
+  const endDateArr = endDate.split("");
   const startDateObj = DateTime.local(
     Number(startDateArr[0]),
     Number(startDateArr[1]),
-    Number(startDateArr[2])
+    Number(startDateArr[2]),
   );
   const endDateObj = DateTime.local(
     Number(endDateArr[0]),
     Number(endDateArr[1]),
-    Number(endDateArr[2])
+    Number(endDateArr[2]),
   );
   const duration = endDateObj.diff(startDateObj, "days").toObject().days;
   if (!duration || duration < 1) {
@@ -52,7 +52,7 @@ const startPlan = async (req, res) => {
     books: booksPopulated,
     duration: newPlanning.duration,
     pagesPerDay: newPlanning.pagesPerDay,
-    stats: newPlanning.stats,
+    results: newPlanning.results,
     _id: newPlanning._id,
   });
 }

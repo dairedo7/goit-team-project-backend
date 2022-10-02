@@ -3,37 +3,12 @@ const { Schema, SchemaTypes, model } = require("mongoose");
 
 const planningSchema = new Schema(
   {
-    startDate: {
-      type: String,
-    },
-    endDate: {
-      type: String,
-    },
+    startDate: String,
+    endDate: String,
     duration: Number,
-    books: [
-      {
-        type: SchemaTypes.ObjectId,
-        ref: "book",
-      },
-    ],
-    pagesReadPerDay: Number,
-    totalPages: Number,
-    readPages: {
-      type: Number,
-      default: 0,
-    },
-    results: [
-      {
-        date: {
-          type: String,
-          required: [true, "Date is required"],
-        },
-        pagesCount: {
-          type: Number,
-          required: [true, "Number of pages is required"],
-        },
-      },
-    ],
+    books: [{ type: SchemaTypes.ObjectId, ref: "Book" }],
+    pagesPerDay: Number,
+    results: [{ date: String, pagesCount: Number }],
   },
   { versionKey: false, timestamps: true }
 );
@@ -42,9 +17,7 @@ const joiPlanningSchema = Joi.object({
   startDate: Joi.string().required(),
   endDate: Joi.string().required(),
   duration: Joi.number(),
-  pagesReadPerDay: Joi.number(),
-  totalPages: Joi.number(),
-  readPages: Joi.number(),
+  pagesPerDay: Joi.number(),
   results: Joi.array().items(
     Joi.object({
       date: Joi.string().required(),

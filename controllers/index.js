@@ -5,6 +5,7 @@ const authController = require("./auth/auth-controller");
 const getCurrent = require("./users/getCurrent");
 const getPlanningInfo = require("./users/getPlanningInfo");
 const startPlan = require("./users/startPlan");
+const readPages = require("./users/readPages");
 
 module.exports = {
   signUp,
@@ -13,5 +14,6 @@ module.exports = {
   authController,
   getCurrent,
   getPlanningInfo,
-  startPlan
+  startPlan,
+  readPages,
 };

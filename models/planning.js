@@ -5,11 +5,9 @@ const planningSchema = new Schema(
   {
     startDate: {
       type: String,
-      required: [true, "Start date is required"],
     },
     endDate: {
       type: String,
-      required: [true, "End date is required"],
     },
     duration: Number,
     books: [

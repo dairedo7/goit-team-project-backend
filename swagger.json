@@ -144,7 +144,7 @@
                         "content": {}
                     },
                     "401": {
-                        "description": "Unauthorized (invalid access token)",
+                        "description": "Not authorized",
                         "content": {}
                     },
                     "404": {
@@ -208,6 +208,42 @@
                     },
                     "400": {
                         "description": "Invalid request body / No token provided",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Invalid user / Invalid session",
+                        "content": {}
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get books",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetBooks"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid id) / No token provided",
                         "content": {}
                     },
                     "401": {
@@ -321,7 +357,7 @@
                 }
             }
         },
-        "/planning": {
+        "/user/planning": {
             "post": {
                 "tags": [
                     "Planning"
@@ -339,7 +375,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AddPlanningRequest"
+                                "$ref": "#/components/schemas/StartPlanningRequest"
                             }
                         }
                     }
@@ -350,13 +386,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/AddPlanningResponse"
+                                    "$ref": "#/components/schemas/StartPlanningResponse"
                                 }
                             }
                         }
                     },
                     "400": {
-                        "description": "wrong dates / wrong book id",
+                        "description": "Invalid 'bookId', you can't add books that you've already read/reading / Invalid bookId",
                         "content": {}
                     },
                     "401": {
@@ -364,7 +400,7 @@
                         "content": {}
                     },
                     "404": {
-                        "description": "Invalid user / Invalid session",
+                        "description": "Invalid dates / Invalid session",
                         "content": {}
                     }
                 }
@@ -411,7 +447,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "no active planning",
+                        "description": "no active planning / You have already read all the books from this planning",
                         "content": {}
                     },
                     "404": {
@@ -424,7 +460,7 @@
                 "tags": [
                     "Planning"
                 ],
-                "summary": "Get planning",
+                "summary": "Get planning information",
                 "security": [
                     {
                         "Bearer": []
@@ -455,7 +491,7 @@
                         "content": {}
                     },
                     "404": {
-                        "description": "Invalid user / Invalid session",
+                        "description": "Not found",
                         "content": {}
                     }
                 }
@@ -531,16 +567,16 @@
             "SignupResponse": {
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "User's name",
+                        "example": "User"
+                    },
                     "email": {
                         "type": "string",
                         "description": "User's email",
                         "format": "email",
                         "example": "example@gmail.com"
-                    },
-                    "id": {
-                        "type": "string",
-                        "description": "User's id",
-                        "example": "507f1f77bcf86cd799439011"
                     }
                 }
             },
@@ -566,19 +602,9 @@
             "SigninResponse": {
                 "type": "object",
                 "properties": {
-                    "token": {
-                        "type": "string",
-                        "description": "Session's access token (needed for all requests)",
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
-                    },
                     "user": {
                         "type": "object",
                         "properties": {
-                            "name": {
-                                "type": "string",
-                                "description": "User's name",
-                                "example": "User"
-                            },
                             "email": {
                                 "type": "string",
                                 "description": "User's email",
@@ -586,6 +612,11 @@
                                 "example": "example@gmail.com"
                             }
                         }
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "Session's access token (needed for all requests)",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
                     }
                 }
             },
@@ -656,6 +687,59 @@
                     "readPages": {
                         "type": "number",
                         "description": "Book's number of pages read"
+                    },
+                    "rating": {
+                        "type": "string",
+                        "description": "rating",
+                        "example": "1"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Book's status",
+                        "example": "plan"
+                    }
+                }
+            },
+            "GetBooks": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "description": "Book's id",
+                            "example": "07ef3f4358b773378699381"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Book's title",
+                            "example": "Harry Porter"
+                        },
+                        "author": {
+                            "type": "string",
+                            "description": "Book's author",
+                            "example": "J. K. Rowling"
+                        },
+                        "year": {
+                            "type": "number",
+                            "description": "Book's year",
+                            "example": "1997"
+                        },
+                        "totalPages": {
+                            "type": "number",
+                            "description": "Number of pages in a book",
+                            "example": "123"
+                        },
+                        "resume": {
+                            "type": "string",
+                            "description": "resume",
+                            "example": ""
+                        },
+                        "rating": {
+                            "type": "string",
+                            "description": "rating",
+                            "example": "5"
+                        }
                     }
                 }
             },
@@ -679,20 +763,49 @@
                 "required": [],
                 "type": "object",
                 "properties": {
-                    "bookId": {
+                    "id": {
                         "type": "string",
                         "description": "Book's id",
-                        "example": "608170ac715ef491300d3d2e"
+                        "example": "07ef3f4358b773378699381"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Book's title",
+                        "example": "Harry Potter"
+                    },
+                    "author": {
+                        "type": "string",
+                        "description": "Book's author",
+                        "example": "J. K. Rowling"
+                    },
+                    "year": {
+                        "type": "number",
+                        "description": "Book's year",
+                        "example": "1997"
+                    },
+                    "totalPages": {
+                        "type": "number",
+                        "description": "Book's total amount of pages",
+                        "example": "123"
+                    },
+                    "readPages": {
+                        "type": "number",
+                        "description": "Book's number of pages read"
+                    },
+                    "rating": {
+                        "type": "string",
+                        "description": "rating",
+                        "example": "1"
                     },
                     "resume": {
                         "type": "string",
                         "description": "Book's review",
                         "example": "It's a great book"
                     },
-                    "rating": {
+                    "status": {
                         "type": "string",
-                        "description": "Book's rating",
-                        "example": "5"
+                        "description": "Book's status",
+                        "example": "done"
                     }
                 }
             },
@@ -703,7 +816,7 @@
                     "message": "Success delete"
                 }
             },
-            "AddPlanningRequest": {
+            "StartPlanningRequest": {
                 "type": "object",
                 "required": [
                     "startDate",
@@ -714,26 +827,23 @@
                     "startDate": {
                         "type": "string",
                         "description": "start date training",
-                        "example": "2021-04-22"
+                        "example": "2022.05.10"
                     },
                     "endDate": {
                         "type": "string",
                         "description": "end date training",
-                        "example": "2021-04-25"
+                        "example": "2022.06.10"
                     },
                     "books": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "description": "book id (could be more than one)"
-                        },
-                        "example": [
-                            "6081734321739d6fac75857e"
-                        ]
+                        }
                     }
                 }
             },
-            "AddPlanningResponse": {
+            "StartPlanningResponse": {
                 "type": "object",
                 "properties": {
                     "_id": {

@@ -10,7 +10,6 @@ const {
 } = require("../../controllers/auth/auth-controller");
 
 const router = express.Router();
-console.log(router);
 
 router.post("/signup", validation(joiUserSchema), wrapper(signUp));
 

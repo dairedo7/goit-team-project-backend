@@ -927,7 +927,7 @@
                                 "pagesCount": {
                                     "type": "number",
                                     "description": "The number of pages",
-                                    "example": "Harry Porter"
+                                    "example": "25"
                                 }
                             }
                         }

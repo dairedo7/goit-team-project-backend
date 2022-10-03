@@ -1,14 +1,15 @@
-const Joi = require("joi");
-const { Schema, SchemaTypes, model } = require("mongoose");
+const Joi = require('joi');
+const { Schema, SchemaTypes, model } = require('mongoose');
 
 const planningSchema = new Schema(
   {
     startDate: String,
     endDate: String,
     duration: Number,
-    books: [{ type: SchemaTypes.ObjectId, ref: "Book" }],
+    books: [{ type: SchemaTypes.ObjectId, ref: 'Book' }],
     pagesPerDay: Number,
     results: [{ date: String, pagesCount: Number }],
+    user: [{ type: SchemaTypes.ObjectId, ref: 'User' }],
   },
   { versionKey: false, timestamps: true }
 );
@@ -26,7 +27,7 @@ const joiPlanningSchema = Joi.object({
   ),
 });
 
-const Planning = model("planning", planningSchema);
+const Planning = model('planning', planningSchema);
 
 module.exports = {
   Planning,

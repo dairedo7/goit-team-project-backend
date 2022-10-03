@@ -25,7 +25,7 @@ const startPlan = async (req, res) => {
   const booksPopulated = [];
   for (let i = 0; i < books.length; i++) {
     const book = await Book.findOne({ _id: books[i] });
-    console.log(book);
+    // console.log(book);
     if (!book || !user?.books.includes(book?._id)) {
       return res.status(400).send({ message: "Invalid 'bookId'" });
     }

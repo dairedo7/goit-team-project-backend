@@ -10,6 +10,6 @@ router.get('/planning', auth, wrapper(getPlanningInfo));
 
 router.post('/planning', auth, wrapper(startPlan));
 
-router.patch('/planning', wrapper(readPages));
+router.patch('/planning', auth, wrapper(readPages));
 
 module.exports = router;

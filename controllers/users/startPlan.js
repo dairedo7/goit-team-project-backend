@@ -18,9 +18,9 @@ const startPlan = async (req, res) => {
   const endDateObj = DateTime.local(Number(endDateArr[0]), Number(endDateArr[1]), Number(endDateArr[2]));
   const duration = endDateObj.diff(startDateObj, 'days').toObject().days;
 
-  if (!duration || duration < 1) {
-    return res.status(404).send({ message: 'Invalid dates' });
-  }
+  // if (!duration || duration < 1) {
+  //   return res.status(404).send({ message: 'Invalid dates' });
+  // }
   let totalPages = 0;
   const booksPopulated = [];
   for (let i = 0; i < books.length; i++) {

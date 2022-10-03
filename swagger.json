@@ -664,7 +664,7 @@
             "AddBookResponse": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "_id": {
                         "type": "string",
                         "description": "Book's id",
                         "example": "07ef3f4358b773378699381"
@@ -710,7 +710,7 @@
                 "items": {
                     "type": "object",
                     "properties": {
-                        "id": {
+                        "_id": {
                             "type": "string",
                             "description": "Book's id",
                             "example": "07ef3f4358b773378699381"
@@ -773,7 +773,7 @@
                 "required": [],
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "_id": {
                         "type": "string",
                         "description": "Book's id",
                         "example": "07ef3f4358b773378699381"
@@ -983,6 +983,11 @@
             "GetCurrent": {
                 "type": "object",
                 "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Book's id",
+                        "example": "07ef3f4351654684862d2dg9381"
+                    },
                     "name": {
                         "type": "string",
                         "description": "User's name",
@@ -992,6 +997,11 @@
                         "type": "string",
                         "description": "User's email",
                         "example": "user@example.com"
+                    },
+                    "planning": {
+                        "type": "string",
+                        "description": "Planning's id",
+                        "example": "51fdf5166df55g5j456fh6665dg"
                     },
                     "plane": {
                         "type": "object",

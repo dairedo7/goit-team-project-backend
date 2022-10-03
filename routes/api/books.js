@@ -1,7 +1,7 @@
 const express = require('express');
 
 const ctrl = require('../../controllers/books');
-const { getCurrent } = require('../../controllers');
+const { getBookStatus } = require('../../controllers');
 const { validation, validateId, auth, wrapper } = require('../../middlewares');
 const { joiBookSchema, joiBookUpdateSchema } = require('../../models');
 
@@ -11,7 +11,7 @@ router.get('/', auth, wrapper(ctrl.getBooks));
 
 router.post('/', auth, validation(joiBookSchema), wrapper(ctrl.addBook));
 
-router.get('/get-status', auth, wrapper(getCurrent));
+router.get('/get-status', auth, wrapper(getBookStatus));
 
 router.put('/:bookId', auth, validation(joiBookUpdateSchema), wrapper(ctrl.updateBook));
 

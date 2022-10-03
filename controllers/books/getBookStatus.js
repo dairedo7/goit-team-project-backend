@@ -48,12 +48,12 @@ const getCurrent = async (req, res, next) => {
         }
 
         if (user.books === DONE) {
-          const planningToRead = data.books.filter((book) => book.readPages === 0);
+          const finishedReading = data.books.filter((book) => book.readPages === 0);
           return res.status(200).json({
             status: 'success',
             code: 200,
             data: {
-              planningToRead,
+              finishedReading,
             },
           });
         }
@@ -62,5 +62,15 @@ const getCurrent = async (req, res, next) => {
     next(err);
   }
 };
+
+// const readingStatus = (bookStatus) => {
+//   return res.status(200).json({
+//     status: 'success',
+//     code: 200,
+//     data: {
+//       bookStatus,
+//     },
+//   });
+// };
 
 module.exports = getCurrent;

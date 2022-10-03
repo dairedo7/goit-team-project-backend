@@ -836,10 +836,7 @@
                     },
                     "books": {
                         "type": "array",
-                        "items": {
-                            "type": "string",
-                            "description": "book id (could be more than one)"
-                        }
+                        "example": []
                     }
                 }
             },

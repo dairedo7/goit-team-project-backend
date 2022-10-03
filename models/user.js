@@ -30,11 +30,13 @@ const userSignUpSchema = Schema(
         ref: 'book',
       },
     ],
-    planning: {
-      type: SchemaTypes.ObjectId,
-      default: null,
-      ref: 'planning',
-    },
+    planning: [
+      {
+        type: SchemaTypes.ObjectId,
+        default: null,
+        ref: 'planning',
+      },
+    ],
   },
   { versionKey: false, timestamps: true }
 );

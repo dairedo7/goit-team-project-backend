@@ -1,5 +1,5 @@
 const Book = require('../../models');
-const User = require('../../models');
+const { User } = require('../../models');
 
 const getPlanningInfo = async (_, res) => {
   const result = await Book.find({});

@@ -916,7 +916,21 @@
                     },
                     "results": {
                         "type": "array",
-                        "example": []
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "date": {
+                                    "type": "string",
+                                    "description": "The date",
+                                    "example": "15"
+                                },
+                                "pagesCount": {
+                                    "type": "number",
+                                    "description": "The number of pages",
+                                    "example": "Harry Porter"
+                                }
+                            }
+                        }
                     }
                 }
             },

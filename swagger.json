@@ -605,6 +605,11 @@
                     "user": {
                         "type": "object",
                         "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "User's name",
+                                "example": "User"
+                            },
                             "email": {
                                 "type": "string",
                                 "description": "User's email",
@@ -739,6 +744,11 @@
                             "type": "string",
                             "description": "rating",
                             "example": "5"
+                        },
+                        "user": {
+                            "type": "string",
+                            "description": "User's id",
+                            "example": "07ef3f4351654684862d2dg9381"
                         }
                     }
                 }

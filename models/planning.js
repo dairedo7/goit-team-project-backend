@@ -6,10 +6,11 @@ const planningSchema = new Schema(
     startDate: String,
     endDate: String,
     duration: Number,
-    books: [{ type: SchemaTypes.ObjectId, ref: 'Book' }],
+    books: [{ type: SchemaTypes.ObjectId, ref: 'book' }],
+    booksToRead: Array,
     pagesPerDay: Number,
-    results: [{ date: String, pagesCount: Number }],
-    user: [{ type: SchemaTypes.ObjectId, ref: 'User' }],
+    results: [{ time: String, pagesCount: Number }],
+    user: [{ type: SchemaTypes.ObjectId, ref: 'user' }],
   },
   { versionKey: false, timestamps: true }
 );

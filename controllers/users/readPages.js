@@ -4,15 +4,19 @@ const { DateTime } = require('luxon');
 const addReadPages = async (req, res) => {
   const user = req.user;
   const { pages } = req.body;
-  const { planning } = await User.findOne({ _id: user });
+  // console.log(pages);
+  // const { planning } = await User.findOne({ _id: user });
   // console.log(planning);
 
-  const { books } = await User.findOne({
-    _id: user._id,
-  }).populate('books');
+  const planning = await Planning.findOne({ _id: user?.planning }).populate('books');
+  const books = planning.books;
+  // console.log(planning.books);
+  // const { books } = await Planning.findOne({
+  //   _id: user._id,
+  // }).populate('books');
   // console.log(books);
 
-  if (!planning) {
+  if (!books) {
     return res.status(403).send({ message: 'You must start a planning first' });
   }
 
@@ -22,24 +26,25 @@ const addReadPages = async (req, res) => {
   console.log(books.length);
   for (let i = 0; i < books.length; i++) {
     currentIteration = i;
+    // console.log(currentIteration);
 
-    book = await Book.findOne({ _id: planning.books[i] });
-    if (book?.pagesTotal === book?.readPages) {
+    book = await Book.findOne({ _id: books[i] });
+    if (book?.totalPages === book?.readPages) {
       continue;
     }
     book.readPages += pages;
-    if (book.readPages > book.pagesTotal) {
-      diff = book.readPages - book.pagesTotal;
-      book.readPages = book.pagesTotal;
+    if (book.readPages > book.totalPages) {
+      diff = book.readPages - book.totalPages;
+      book.readPages = book.totalPages;
       while (diff !== 0) {
         currentIteration++;
         const nextBook = await Book.findOne({
-          _id: planning.books[currentIteration],
+          _id: books[currentIteration],
         });
         nextBook.readPages += diff;
-        if (nextBook.readPages > nextBook.pagesTotal) {
-          diff = nextBook.readPages - nextBook.pagesTotal;
-          nextBook.readPages = nextBook.pagesTotal;
+        if (nextBook.readPages > nextBook.totalPages) {
+          diff = nextBook.readPages - nextBook.totalPages;
+          nextBook.readPages = nextBook.totalPages;
           await nextBook.save();
         } else {
           diff = 0;
@@ -54,14 +59,18 @@ const addReadPages = async (req, res) => {
       message: 'You have already read all the books from this planning',
     });
   }
-  const date = DateTime.now().setZone('Europe/Odessa').toObject();
+  const date = DateTime.now().setZone('Europe/Kiev').toObject();
+  // console.log(date);
+
   let minute = date.minute?.toString();
+  console.log(minute);
   if (date.minute.toString().length === 1) {
     minute = '0' + date.minute;
   }
   const time = `${date.year}-${date.month}-${date.day} ${date.hour}:${minute}`;
-  planning.stats.push({ time, pagesCount: pages });
+  planning.results.push({ time, pagesCount: pages });
   await planning.save();
+  console.log(book);
   return res.status(200).send({ book, planning });
 };
 module.exports = addReadPages;

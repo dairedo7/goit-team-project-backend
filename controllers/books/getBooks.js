@@ -1,9 +1,11 @@
-const { Book } = require('../../models/book');
+const { User } = require("../../models");
 
-const getBooks = async (_, res) => {
-  const result = await Book.find({}, '-createdAt -updatedAt');
-  console.log(result);
-  res.json(result);
+const getBooks = async (req, res) => {
+  const user = req.user;
+
+  const { books } = await User.findOne({ _id: user }).populate("books");
+
+  res.json(books);
 };
 
 module.exports = getBooks;

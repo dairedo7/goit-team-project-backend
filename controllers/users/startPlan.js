@@ -1,5 +1,5 @@
-const { Planning, Book, User } = require('../../models');
-const { DateTime } = require('luxon');
+const { Planning, Book, User } = require("../../models");
+const { DateTime } = require("luxon");
 
 const startPlan = async (req, res) => {
   const { startDate, endDate, bookId } = req.body;
@@ -17,7 +17,8 @@ const startPlan = async (req, res) => {
   }
   if (book.readPages !== 0) {
     return res.status(400).send({
-      message: "Invalid 'bookId', you can't add books that you've already read/reading",
+      message:
+        "Invalid 'bookId', you can't add books that you've already read/reading",
     });
   }
 
@@ -31,17 +32,26 @@ const startPlan = async (req, res) => {
   // Populate give us access to fields of books in User's model
   const { books } = await User.findOne({
     _id: user._id,
-  }).populate('books');
+  }).populate("books");
+
   // console.log(startDate, 'startDate');
   // console.log(endDate, 'endDate');
-  const startDateArr = startDate.split('-');
-  const endDateArr = endDate.split('-');
-  const startDateObj = DateTime.local(Number(startDateArr[0]), Number(startDateArr[1]), Number(startDateArr[2]));
-  const endDateObj = DateTime.local(Number(endDateArr[0]), Number(endDateArr[1]), Number(endDateArr[2]));
-  const duration = endDateObj.diff(startDateObj, 'days').toObject().days;
+  const startDateArr = startDate.split("-");
+  const endDateArr = endDate.split("-");
+  const startDateObj = DateTime.local(
+    Number(startDateArr[0]),
+    Number(startDateArr[1]),
+    Number(startDateArr[2])
+  );
+  const endDateObj = DateTime.local(
+    Number(endDateArr[0]),
+    Number(endDateArr[1]),
+    Number(endDateArr[2])
+  );
+  const duration = endDateObj.diff(startDateObj, "days").toObject().days;
 
   if (!duration || duration < 1) {
-    return res.status(404).send({ message: 'Invalid dates' });
+    return res.status(404).send({ message: "Invalid dates" });
   }
 
   // for (let i = 0; i < books.length; i++) {

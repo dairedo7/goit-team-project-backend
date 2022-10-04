@@ -1,24 +1,24 @@
-const { Book, User, Planning } = require("../../models");
+const { User, Planning } = require("../../models");
 
 const getPlanningInfo = async (req, res) => {
-  const result = await Book.find({});
-
   const user = req.user;
-  // console.log(user);
-  const planning = await User.findOne({ _id: user?.planning }).populate(
-    "books"
-  );
 
-  // console.log(planning);
+  const { books } = await User.findOne({ _id: user }).populate("books");
+  const planning = await Planning.findOne({ _id: user.planning });
 
-  if (!result) {
+  if (!books || !planning) {
     const error = new Error({ message: "Not found" });
     error.status = 404;
     throw error;
   }
-  res.json(user);
+  res.json({
+    status: "success",
+    code: 200,
+    data: {
+      booksNumber: books.length,
+      planningDur: planning.duration,
+    },
+  });
 };
 
 module.exports = getPlanningInfo;
-
-// 633c1300dad40cfa324160cd

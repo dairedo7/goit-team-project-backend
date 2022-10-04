@@ -1,15 +1,24 @@
-const Book = require('../../models');
-const { User } = require('../../models');
+const { User, Planning } = require("../../models");
 
-const getPlanningInfo = async (_, res) => {
-  const result = await Book.find({});
-  console.log(result);
-  if (!result) {
-    const error = new Error({ message: 'Not found' });
+const getPlanningInfo = async (req, res) => {
+  const user = req.user;
+
+  const { books } = await User.findOne({ _id: user }).populate("books");
+  const planning = await Planning.findOne({ _id: user.planning });
+
+  if (!books || !planning) {
+    const error = new Error({ message: "Not found" });
     error.status = 404;
     throw error;
   }
-  res.json(result);
+  res.json({
+    status: "success",
+    code: 200,
+    data: {
+      booksNumber: books.length,
+      planningDur: planning.duration,
+    },
+  });
 };
 
 module.exports = getPlanningInfo;

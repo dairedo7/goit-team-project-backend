@@ -1,9 +1,11 @@
 const { Planning, Book, User } = require('../../models');
 const { DateTime } = require('luxon');
+const { bookStatus } = require('../../helpers/constants');
 
 const addReadPages = async (req, res) => {
   const user = req.user;
   const { pages, bookId } = req.body;
+  const { READ, DONE } = bookStatus;
 
   const book = await Book.findOne({ _id: bookId });
 
@@ -12,6 +14,14 @@ const addReadPages = async (req, res) => {
   }
 
   book.readPages += pages;
+
+  if (book.readPages > 0) {
+    book.status = READ;
+  }
+
+  if (book.totalPages === book.readPages) {
+    book.status = DONE;
+  }
 
   console.log(book.readPages);
   await book.save();

@@ -4,14 +4,12 @@ const { bookStatus } = require('../../helpers/constants');
 
 const startPlan = async (req, res) => {
   const { startDate, endDate, bookId } = req.body;
-  // 633b49b86fd19583db53b1ac
   const { READ } = bookStatus;
   let totalPages = 0;
   const booksPopulated = [];
 
   const book = await Book.findOne({ _id: bookId });
 
-  // console.log(book);
   const user = req.user;
 
   if (!book || !user?.books.includes(book?._id)) {
@@ -27,11 +25,6 @@ const startPlan = async (req, res) => {
   book.status = READ;
   booksPopulated.push(book);
 
-  // const theBook = Book.findOne({
-  //   _id: _bookId,
-  // });
-
-  // Populate give us access to fields of books in User's model
   const { books } = await User.findOne({
     _id: user._id,
   }).populate('books');
@@ -48,21 +41,6 @@ const startPlan = async (req, res) => {
     return res.status(404).send({ message: 'Invalid dates' });
   }
 
-  // for (let i = 0; i < books.length; i++) {
-  //   const book = await Book.findOne({ _id: books[i] });
-  //   // console.log(book);
-  //   if (!book || !user?.books.includes(book?._id)) {
-  //     return res.status(400).send({ message: "Invalid 'bookId'" });
-  //   }
-  //   if (book.readPages !== 0) {
-  //     return res.status(400).send({
-  //       message: "Invalid 'bookId', you can't add books that you've already read/reading",
-  //     });
-  //   }
-  //   totalPages += book.totalPages;
-  //   booksPopulated.push(book);
-  // }
-
   const pagesPerDay = Math.ceil(totalPages / duration);
   const newPlanning = await Planning.create({
     startDate,
@@ -75,8 +53,6 @@ const startPlan = async (req, res) => {
   user.planning.push(newPlanning);
 
   await user.save();
-
-  // console.log(newPlanning);
 
   await newPlanning.save();
   console.log(newPlanning._id);

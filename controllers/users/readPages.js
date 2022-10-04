@@ -1,4 +1,4 @@
-const { Planning, Book, User } = require('../../models');
+const { Planning, Book } = require('../../models');
 const { DateTime } = require('luxon');
 const { bookStatus } = require('../../helpers/constants');
 

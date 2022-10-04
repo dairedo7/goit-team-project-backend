@@ -9,7 +9,7 @@ const startPlan = async (req, res) => {
 
   const book = await Book.findOne({ _id: bookId });
 
-  console.log(book);
+  // console.log(book);
   const user = req.user;
 
   if (!book || !user?.books.includes(book?._id)) {
@@ -34,8 +34,8 @@ const startPlan = async (req, res) => {
     _id: user._id,
   }).populate("books");
 
-  // console.log(startDate, 'startDate');
-  // console.log(endDate, 'endDate');
+  console.log(startDate, "startDate");
+  console.log(endDate, "endDate");
   const startDateArr = startDate.split("-");
   const endDateArr = endDate.split("-");
   const startDateObj = DateTime.local(

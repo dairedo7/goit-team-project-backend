@@ -29,6 +29,8 @@ const startPlan = async (req, res) => {
     _id: user._id,
   }).populate('books');
 
+  await Book.findByIdAndUpdate(book._id, book, { new: true });
+
   console.log(startDate, 'startDate');
   console.log(endDate, 'endDate');
   const startDateArr = startDate.split('-');

@@ -1,74 +1,113 @@
-const { Planning, Book, User } = require('../../models');
+const { Planning, Book } = require('../../models');
 const { DateTime } = require('luxon');
-const { bookStatus } = require('../../helpers/constants');
+// const { bookStatus } = require('../../helpers/constants');
 
-const startPlan = async (req, res) => {
-  const { startDate, endDate, bookId } = req.body;
-  const { READ } = bookStatus;
-  let totalPages = 0;
-  const booksPopulated = [];
+const startPlan = async (req, res, next) => {
+  try {
+    const { startDate, endDate, books } = req.body;
+    const user = req.user;
 
-  const book = await Book.findOne({ _id: bookId });
+    console.log(books);
 
-  const user = req.user;
+    const startTime = startDate.split('-');
+    const endTime = endDate.split('-');
+    const startDateObjArr = DateTime.local(Number(startTime[0]), Number(startTime[1]), Number(startTime[2]));
+    const endDateObjArr = DateTime.local(Number(endTime[0]), Number(endTime[1]), Number(endTime[2]));
+    const duration = endDateObjArr.diff(startDateObjArr, 'days').toObject().days;
 
-  if (!book || !user?.books.includes(book?._id)) {
-    return res.status(400).send({ message: "Invalid 'bookId'" });
-  }
-  if (book.readPages !== 0) {
-    return res.status(400).send({
-      message: "Invalid 'bookId', you can't add books that you've already read/reading",
+    if (!duration || duration < 1) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'wrong dates, use YYYY-MM-DD format or select current date',
+      });
+    }
+
+    const selectedBooks = [];
+    let numberOfPages = 0;
+
+    for (let i = 0; i < books.length; i++) {
+      const book = await Book.findOne({ _id: books[i] });
+      console.log(book);
+      if (!book || !user?.books.includes(book?._id)) {
+        return res.status(400).json({
+          status: 'error',
+          code: 400,
+          message: 'wrong book id',
+        });
+      }
+
+      if (book.readPages !== 0) {
+        return res.status(400).json({
+          status: 'error',
+          code: 400,
+          message: "you can't add book that you've already read",
+        });
+      }
+
+      numberOfPages += book.totalPages;
+
+      const { _id, title, author, year, totalPages, readPages, review, rating } = book;
+
+      const validateBook = {
+        _id,
+        title,
+        author,
+        year,
+        totalPages,
+        readPages,
+        review,
+        rating,
+      };
+
+      selectedBooks.push(validateBook);
+    }
+
+    const pagesPerDay = Math.ceil(numberOfPages / duration);
+
+    const training = await Planning.findOne({ _id: user?.training });
+
+    if (training) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'you have active training',
+      });
+    }
+
+    const createTraining = await Planning.create({
+      startDate,
+      endDate,
+      duration,
+      books,
+      pagesPerDay,
+      totalPages: numberOfPages,
     });
+
+    user.training = createTraining._id;
+    user.planning.push(createTraining);
+
+    await user.save();
+    await createTraining.save();
+
+    return res.status(201).json({
+      status: 'success',
+      code: 201,
+      data: {
+        _id: createTraining._id,
+        startDate: createTraining.startDate,
+        endDate: createTraining.endDate,
+        duration: createTraining.duration,
+        books: selectedBooks,
+        pagesPerDay: createTraining.pagesPerDay,
+        totalPages: createTraining.totalPages,
+        readPages: createTraining.readPages,
+        results: createTraining.results,
+      },
+    });
+  } catch (err) {
+    next(err);
   }
-
-  totalPages += book.totalPages;
-  book.status = READ;
-  booksPopulated.push(book);
-
-  const { books } = await User.findOne({
-    _id: user._id,
-  }).populate('books');
-
-  await Book.findByIdAndUpdate(book._id, book, { new: true });
-
-  console.log(startDate, 'startDate');
-  console.log(endDate, 'endDate');
-  const startDateArr = startDate.split('-');
-  const endDateArr = endDate.split('-');
-  const startDateObj = DateTime.local(Number(startDateArr[0]), Number(startDateArr[1]), Number(startDateArr[2]));
-  const endDateObj = DateTime.local(Number(endDateArr[0]), Number(endDateArr[1]), Number(endDateArr[2]));
-  const duration = endDateObj.diff(startDateObj, 'days').toObject().days;
-
-  if (!duration || duration < 1) {
-    return res.status(404).send({ message: 'Invalid dates' });
-  }
-
-  const pagesPerDay = Math.ceil(totalPages / duration);
-  const newPlanning = await Planning.create({
-    startDate,
-    endDate,
-    books,
-    duration,
-    pagesPerDay,
-  });
-
-  user.planning.push(newPlanning);
-
-  await user.save();
-
-  await newPlanning.save();
-  console.log(newPlanning._id);
-  return res.status(201).send({
-    data: {
-      startDate: newPlanning.startDate,
-      endDate: newPlanning.endDate,
-      books: booksPopulated,
-      duration: newPlanning.duration,
-      pagesPerDay: newPlanning.pagesPerDay,
-      results: newPlanning.results,
-      _id: newPlanning._id,
-    },
-  });
 };
 
 module.exports = startPlan;

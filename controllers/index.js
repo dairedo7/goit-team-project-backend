@@ -8,6 +8,7 @@ const getPlanningInfo = require('./users/getPlanningInfo');
 const startPlan = require('./users/startPlan');
 const readPages = require('./users/readPages');
 const googleSignin = require('./auth/googleSignin');
+const removePlanning = require('./users/removePlanning');
 
 module.exports = {
   signUp,
@@ -21,4 +22,5 @@ module.exports = {
   getPlanningInfo,
   startPlan,
   readPages,
+  removePlanning,
 };

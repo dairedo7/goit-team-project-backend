@@ -14,6 +14,6 @@ router.get('/signout', auth, wrapper(signOut));
 
 router.get('/google', wrapper(googleAuth));
 router.get('/google-redirect', wrapper(googleRedirect));
-router.post('/google-signin', wrapper(googleSignin));
+router.get('/:token', wrapper(googleSignin));
 
 module.exports = router;

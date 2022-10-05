@@ -1,5 +1,7 @@
 const Joi = require('joi');
 const { Schema, SchemaTypes, model } = require('mongoose');
+// const { INPROCESS, FINISHEDBOOK, FINISHEDTRAINING } = require('../../');
+// const { PLAN } = require('../helpers/constants');
 
 const planningSchema = new Schema(
   {
@@ -11,6 +13,12 @@ const planningSchema = new Schema(
     pagesPerDay: Number,
     results: [{ time: String, pagesCount: Number }],
     user: [{ type: SchemaTypes.ObjectId, ref: 'user' }],
+    // status: {
+    //   type: String,
+    //   inprocess: INPROCESS,
+    //   finishedbook: FINISHEDBOOK,
+    //   finishedtraining: FINISHEDTRAINING,
+    // },
   },
   { versionKey: false, timestamps: true }
 );

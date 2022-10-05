@@ -10,7 +10,7 @@ const addBook = async (req, res) => {
   user?.books.push(result);
 
   const { books } = await User.findOne({ _id: user._id }).populate('books');
-
+  console.log(books);
   if (book.readPages > 0 && bookStatus === undefined) {
     result.status = 'read';
   }

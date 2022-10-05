@@ -944,15 +944,10 @@
                         "description": "end date training",
                         "example": "2022-10-14"
                     },
-                    "book": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string",
-                                "description": "Book's id",
-                                "example": "07ef3f4358b773378699381"
-                            }
-                        }
+                    "bookId": {
+                        "type": "string",
+                        "description": "Book's id",
+                        "example": "07ef3f4358b773378699381"
                     }
                 }
             },
@@ -1046,20 +1041,15 @@
             "ReadPagesRequest": {
                 "type": "object",
                 "properties": {
-                    "book": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string",
-                                "description": "Book's id",
-                                "example": "07ef3f4358b773378699381"
-                            },
-                            "readPages": {
-                                "type": "number",
-                                "description": "Number of read pages",
-                                "example": "7"
-                            }
-                        }
+                    "bookId": {
+                        "type": "string",
+                        "description": "Book's id",
+                        "example": "07ef3f4358b773378699381"
+                    },
+                    "pages": {
+                        "type": "number",
+                        "description": "Number of read pages",
+                        "example": "7"
                     }
                 }
             },

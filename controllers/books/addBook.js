@@ -1,4 +1,4 @@
-const { Book } = require("../../models/book");
+const { Book, User } = require('../../models');
 
 const addBook = async (req, res) => {
   const book = req.body;
@@ -9,34 +9,35 @@ const addBook = async (req, res) => {
   const result = await Book.create({ ...book });
   user?.books.push(result);
 
+  const { books } = await User.findOne({ _id: user._id }).populate('books');
+
   if (book.readPages > 0 && bookStatus === undefined) {
-    result.status = "read";
+    result.status = 'read';
   }
 
-  if (book.title === result.title) {
-    return res
-      .status(400)
-      .send({ message: `Book (${book.title}) already exist in your library` });
-  }
+  const match = books.find(({ title }) => book.title === title);
 
-  await user?.save();
-
-  res.status(201).json({
-    data: {
-      result: {
-        _id: result._id,
-        title: result.title,
-        author: result.author,
-        year: result.year,
-        totalPages: result.totalPages,
-        readPages: result.readPages,
-        resume: result.resume,
-        rating: result.rating,
-        user: result.user,
-        status: result.status,
+  if (match) {
+    res.status(400).send({ message: `Book (${book.title}) already exists in your library` });
+  } else {
+    await user?.save();
+    res.status(201).json({
+      data: {
+        result: {
+          _id: result._id,
+          title: result.title,
+          author: result.author,
+          year: result.year,
+          totalPages: result.totalPages,
+          readPages: result.readPages,
+          resume: result.resume,
+          rating: result.rating,
+          user: result.user,
+          status: result.status,
+        },
       },
-    },
-  });
+    });
+  }
 };
 
 module.exports = addBook;

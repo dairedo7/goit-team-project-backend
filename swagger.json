@@ -257,6 +257,52 @@
                 }
             }
         },
+        "/book/get-status/{status}": {
+            "get": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Get books by status",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "description": "Book's status",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetBookByStatus"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid id) / No token provided",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Invalid user / Invalid session",
+                        "content": {}
+                    }
+                }
+            }
+        },
         "/book/{bookId}": {
             "put": {
                 "tags": [
@@ -447,7 +493,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "no active planning / You have already read all the books from this planning",
+                        "description": "You must start a planning first / Maximum allowed pages is ... / You have already read all the books from this planning",
                         "content": {}
                     },
                     "404": {
@@ -654,10 +700,6 @@
                         "type": "number",
                         "description": "Book's total amount of pages",
                         "example": "123"
-                    },
-                    "readPages": {
-                        "type": "number",
-                        "description": "Book's number of pages read"
                     }
                 }
             },
@@ -745,6 +787,64 @@
                             "description": "rating",
                             "example": "5"
                         },
+                        "status": {
+                            "type": "string",
+                            "description": "Book's status",
+                            "example": "plan"
+                        },
+                        "user": {
+                            "type": "string",
+                            "description": "User's id",
+                            "example": "07ef3f4351654684862d2dg9381"
+                        }
+                    }
+                }
+            },
+            "GetBookByStatus": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "_id": {
+                            "type": "string",
+                            "description": "Book's id",
+                            "example": "07ef3f4358b773378699381"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "Book's title",
+                            "example": "Harry Porter"
+                        },
+                        "author": {
+                            "type": "string",
+                            "description": "Book's author",
+                            "example": "J. K. Rowling"
+                        },
+                        "year": {
+                            "type": "number",
+                            "description": "Book's year",
+                            "example": "1997"
+                        },
+                        "totalPages": {
+                            "type": "number",
+                            "description": "Number of pages in a book",
+                            "example": "123"
+                        },
+                        "resume": {
+                            "type": "string",
+                            "description": "resume",
+                            "example": ""
+                        },
+                        "rating": {
+                            "type": "string",
+                            "description": "rating",
+                            "example": "5"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "Book's status",
+                            "example": "plan"
+                        },
                         "user": {
                             "type": "string",
                             "description": "User's id",
@@ -815,7 +915,7 @@
                     "status": {
                         "type": "string",
                         "description": "Book's status",
-                        "example": "done"
+                        "example": "read"
                     }
                 }
             },
@@ -831,22 +931,23 @@
                 "required": [
                     "startDate",
                     "endDate",
-                    "books"
+                    "_id"
                 ],
                 "properties": {
                     "startDate": {
                         "type": "string",
                         "description": "start date training",
-                        "example": "2022.05.10"
+                        "example": "2022-10-04"
                     },
                     "endDate": {
                         "type": "string",
                         "description": "end date training",
-                        "example": "2022.06.10"
+                        "example": "2022-10-14"
                     },
-                    "books": {
-                        "type": "array",
-                        "example": []
+                    "bookId": {
+                        "type": "string",
+                        "description": "Book's id",
+                        "example": "07ef3f4358b773378699381"
                     }
                 }
             },
@@ -860,18 +961,18 @@
                     },
                     "startDate": {
                         "type": "string",
-                        "example": "2022.05.10",
+                        "example": "2022-10-04",
                         "description": "start date planning"
                     },
                     "endDate": {
                         "type": "string",
-                        "example": "2022.05.10",
+                        "example": "2022-10-14",
                         "description": "end date planning"
                     },
                     "duration": {
                         "type": "integer",
                         "description": "duration",
-                        "example": 3
+                        "example": 10
                     },
                     "books": {
                         "type": "array",
@@ -903,6 +1004,16 @@
                                     "description": "Number of pages in a book",
                                     "example": "123"
                                 },
+                                "readPages": {
+                                    "type": "number",
+                                    "description": "Number of read pages",
+                                    "example": "0"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "description": "Book's status",
+                                    "example": "read"
+                                },
                                 "resume": {
                                     "type": "string",
                                     "description": "resume",
@@ -916,67 +1027,133 @@
                             }
                         }
                     },
-                    "pagesReadPerDay": {
+                    "pagesPerDay": {
                         "type": "number",
                         "description": "number of pages read per day",
-                        "example": "15"
+                        "example": "13"
                     },
                     "results": {
                         "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "date": {
-                                    "type": "string",
-                                    "description": "The date",
-                                    "example": "15"
-                                },
-                                "pagesCount": {
-                                    "type": "number",
-                                    "description": "The number of pages",
-                                    "example": "25"
-                                }
-                            }
-                        }
+                        "example": []
                     }
                 }
             },
             "ReadPagesRequest": {
-                "required": [
-                    "date",
-                    "pages"
-                ],
                 "type": "object",
                 "properties": {
-                    "date": {
+                    "bookId": {
                         "type": "string",
-                        "description": "the date",
-                        "example": "2022.05.10"
+                        "description": "Book's id",
+                        "example": "07ef3f4358b773378699381"
                     },
                     "pages": {
                         "type": "number",
-                        "description": "read pages",
-                        "example": "15"
+                        "description": "Number of read pages",
+                        "example": "7"
                     }
                 }
             },
             "ReadPagesResponse": {
                 "type": "object",
                 "properties": {
-                    "_id": {
-                        "type": "string",
-                        "description": "planning period id",
-                        "example": "608185d3797104748da4ce35"
+                    "book": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "Book's id",
+                                "example": "07ef3f4358b773378699381"
+                            },
+                            "title": {
+                                "type": "string",
+                                "description": "Book's title",
+                                "example": "Harry Porter"
+                            },
+                            "author": {
+                                "type": "string",
+                                "description": "Book's author",
+                                "example": "J. K. Rowling"
+                            },
+                            "year": {
+                                "type": "number",
+                                "description": "Book's year",
+                                "example": "1997"
+                            },
+                            "totalPages": {
+                                "type": "number",
+                                "description": "Number of pages in a book",
+                                "example": "123"
+                            },
+                            "readPages": {
+                                "type": "number",
+                                "description": "Number of read pages",
+                                "example": "7"
+                            },
+                            "status": {
+                                "type": "string",
+                                "description": "Book's status",
+                                "example": "read"
+                            },
+                            "resume": {
+                                "type": "string",
+                                "description": "resume",
+                                "example": ""
+                            },
+                            "rating": {
+                                "type": "string",
+                                "description": "rating",
+                                "example": "1"
+                            }
+                        }
                     },
-                    "date": {
-                        "type": "string",
-                        "description": "planning period date",
-                        "example": "2022.05.10"
-                    },
-                    "pageCount": {
+                    "planning": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "planning id",
+                                "example": "6081759c95df4f709eb06438"
+                            },
+                            "startDate": {
+                                "type": "string",
+                                "example": "2022-10-04",
+                                "description": "start date planning"
+                            },
+                            "endDate": {
+                                "type": "string",
+                                "example": "2022-10-14",
+                                "description": "end date planning"
+                            },
+                            "duration": {
+                                "type": "number",
+                                "description": "duration",
+                                "example": 10
+                            },
+                            "pagesPerDay": {
+                                "type": "number",
+                                "description": "number of pages read per day",
+                                "example": 10
+                            },
+                            "results": {
+                                "type": "array",
+                                "example": []
+                            }
+                        }
+                    }
+                }
+            },
+            "GetPlanning": {
+                "type": "object",
+                "properties": {
+                    "booksNumber": {
                         "type": "number",
-                        "description": "number of pages read ",
-                        "example": "15"
+                        "description": "Number of books on planning",
+                        "example": "2"
+                    },
+                    "planningDur": {
+                        "type": "string",
+                        "description": "Planning duration",
+                        "example": "20"
                     }
                 }
             },
@@ -985,8 +1162,8 @@
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Book's id",
-                        "example": "07ef3f4351654684862d2dg9381"
+                        "description": "User's id",
+                        "example": "63319c350790a882e0c70f3b"
                     },
                     "name": {
                         "type": "string",
@@ -998,132 +1175,25 @@
                         "description": "User's email",
                         "example": "user@example.com"
                     },
-                    "planning": {
+                    "token": {
                         "type": "string",
-                        "description": "Planning's id",
-                        "example": "51fdf5166df55g5j456fh6665dg"
+                        "description": "Session's access token (needed for all requests)",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
                     },
-                    "plane": {
-                        "type": "object",
-                        "description": "Information about books which user planes to read",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Book's title",
-                                "example": "Harry Porter book 3"
-                            },
-                            "author": {
-                                "type": "string",
-                                "description": "Book's author",
-                                "example": "J. K. Rowling"
-                            },
-                            "year": {
-                                "type": "number",
-                                "description": "Book's year",
-                                "example": "2019"
-                            },
-                            "totalPages": {
-                                "type": "number",
-                                "description": "Book's numberOfPages",
-                                "example": "42"
-                            },
-                            "resume": {
-                                "type": "sting",
-                                "description": "resume",
-                                "example": ""
-                            },
-                            "rating": {
-                                "type": "sting",
-                                "description": "Book's rating",
-                                "example": "null"
-                            },
-                            "_id": {
-                                "type": "string",
-                                "description": "Book's id",
-                                "example": "608170ac715ef491300d3d2e"
-                            }
+                    "planning": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "id of plannings",
+                            "example": "51fdf5166df55g5j456fh6665dg"
                         }
                     },
-                    "read": {
-                        "type": "object",
-                        "description": "Information about books which user reading now",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Book's title",
-                                "example": "Harry Porter bool 2"
-                            },
-                            "author": {
-                                "type": "string",
-                                "description": "Book's author",
-                                "example": "J. K. Rowling"
-                            },
-                            "year": {
-                                "type": "number",
-                                "description": "Book's year",
-                                "example": "2019"
-                            },
-                            "totalPages": {
-                                "type": "number",
-                                "description": "Book's numberOfPages",
-                                "example": "40"
-                            },
-                            "resume": {
-                                "type": "sting",
-                                "description": "resume",
-                                "example": ""
-                            },
-                            "rating": {
-                                "type": "sting",
-                                "description": "Book's rating",
-                                "example": "null"
-                            },
-                            "_id": {
-                                "type": "string",
-                                "description": "Book's id",
-                                "example": "6081706a715ef491300d3d2d"
-                            }
-                        }
-                    },
-                    "done": {
-                        "type": "object",
-                        "description": "Information about books which user finished reading",
-                        "properties": {
-                            "title": {
-                                "type": "string",
-                                "description": "Book's title",
-                                "example": "Harry Porter book 1"
-                            },
-                            "author": {
-                                "type": "string",
-                                "description": "Book's author",
-                                "example": "J. K. Rowling"
-                            },
-                            "year": {
-                                "type": "number",
-                                "description": "Book's year",
-                                "example": "2013"
-                            },
-                            "totalPages": {
-                                "type": "number",
-                                "description": "Book's numberOfPages",
-                                "example": "37"
-                            },
-                            "resume": {
-                                "type": "sting",
-                                "description": "resume",
-                                "example": ""
-                            },
-                            "rating": {
-                                "type": "sting",
-                                "description": "Book's rating",
-                                "example": "5"
-                            },
-                            "_id": {
-                                "type": "string",
-                                "description": "Book's id",
-                                "example": "60816fd9d9c36e9cb8b8330a"
-                            }
+                    "books": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "id of books",
+                            "example": "51fdf5166df55g5j456fh6665dg"
                         }
                     }
                 }

@@ -17,10 +17,10 @@
     ],
     "servers": [
         {
-            "url": "http://localhost:8000/"
+            "url": "https://books-reading-goit.herokuapp.com/"
         },
         {
-            "url": "https://books-reading-goit.herokuapp.com/"
+            "url": "http://localhost:3030/"
         }
     ],
     "tags": [
@@ -162,11 +162,47 @@
                 "summary": "Google authentication",
                 "responses": {
                     "200": {
-                        "description": "Successful operation (redirect to front-end with accessToken, refreshToken and sid in query). Then use GET /user/books",
+                        "description": "Successful operation",
                         "content": {}
                     },
                     "403": {
-                        "description": "Not registered or registered with postman",
+                        "description": "Not registered",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/auth/google-redirect": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Google redirect",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Not registered",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/auth/:token": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Google token",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Not registered",
                         "content": {}
                     }
                 }
@@ -543,6 +579,52 @@
                 }
             }
         },
+        "/user/{planningId}": {
+            "delete": {
+                "tags": [
+                    "Planning"
+                ],
+                "summary": "Remove a planning",
+                "parameters": [
+                    {
+                        "name": "planningId",
+                        "in": "path",
+                        "description": "Plannings's id ('id' field in planning's object)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RemovePlanning"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid request body)",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Planning not found",
+                        "content": {}
+                    }
+                }
+            }
+        },
         "/user/current": {
             "get": {
                 "tags": [
@@ -613,6 +695,11 @@
             "SignupResponse": {
                 "type": "object",
                 "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "User's id",
+                        "example": "63319c350790a882e0c70f3b"
+                    },
                     "name": {
                         "type": "string",
                         "description": "User's name",
@@ -623,6 +710,11 @@
                         "description": "User's email",
                         "format": "email",
                         "example": "example@gmail.com"
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "Session's access token (needed for all requests)",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
                     }
                 }
             },
@@ -651,6 +743,11 @@
                     "user": {
                         "type": "object",
                         "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "User's id",
+                                "example": "63319c350790a882e0c70f3b"
+                            },
                             "name": {
                                 "type": "string",
                                 "description": "User's name",
@@ -661,13 +758,13 @@
                                 "description": "User's email",
                                 "format": "email",
                                 "example": "example@gmail.com"
+                            },
+                            "token": {
+                                "type": "string",
+                                "description": "Session's access token (needed for all requests)",
+                                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
                             }
                         }
-                    },
-                    "token": {
-                        "type": "string",
-                        "description": "Session's access token (needed for all requests)",
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
                     }
                 }
             },
@@ -944,10 +1041,15 @@
                         "description": "end date training",
                         "example": "2022-10-14"
                     },
-                    "bookId": {
-                        "type": "string",
-                        "description": "Book's id",
-                        "example": "07ef3f4358b773378699381"
+                    "books": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "book id (could be more than one)"
+                        },
+                        "example": [
+                            "6081734321739d6fac75857e"
+                        ]
                     }
                 }
             },
@@ -1008,16 +1110,6 @@
                                     "type": "number",
                                     "description": "Number of read pages",
                                     "example": "0"
-                                },
-                                "status": {
-                                    "type": "string",
-                                    "description": "Book's status",
-                                    "example": "read"
-                                },
-                                "resume": {
-                                    "type": "string",
-                                    "description": "resume",
-                                    "example": ""
                                 },
                                 "rating": {
                                     "type": "string",
@@ -1155,6 +1247,13 @@
                         "description": "Planning duration",
                         "example": "20"
                     }
+                }
+            },
+            "RemovePlanning": {
+                "type": "object",
+                "description": "delete",
+                "example": {
+                    "message": "Success delete"
                 }
             },
             "GetCurrent": {

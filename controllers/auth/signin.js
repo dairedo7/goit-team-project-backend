@@ -24,7 +24,7 @@ const signIn = async (req, res) => {
     code: 200,
     data: {
       token,
-      user: { email, name },
+      user: { email, name, _id: user._id },
     },
   });
 };

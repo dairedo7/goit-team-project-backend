@@ -1,5 +1,8 @@
 const { User } = require('../../models/user');
 const { Conflict } = require('http-errors');
+const jwt = require('jsonwebtoken');
+
+const { SECRET_KEY } = process.env;
 const bcrypt = require('bcrypt');
 
 const signUp = async (req, res) => {
@@ -11,10 +14,20 @@ const signUp = async (req, res) => {
   }
   const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
   await User.create({ email, password: hashPassword, name });
+  await user?.save();
+
+  const theUser = await User.findOne({ email: email });
+  const payload = {
+    id: theUser._id,
+  };
+
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '12h' });
+  await User.findByIdAndUpdate(theUser._id, { token });
+
   res.status(201).json({
     status: 'success',
     code: 201,
-    user: { name, email },
+    user: { name, email, token, _id: theUser._id },
   });
 };
 

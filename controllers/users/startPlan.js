@@ -1,10 +1,11 @@
 const { Planning, Book } = require('../../models');
 const { DateTime } = require('luxon');
-// const { bookStatus } = require('../../helpers/constants');
+const { bookStatus } = require('../../helpers/constants');
 
 const startPlan = async (req, res, next) => {
   try {
     const { startDate, endDate, books } = req.body;
+    const { READ, DONE } = bookStatus;
     const user = req.user;
 
     console.log(books);
@@ -46,32 +47,34 @@ const startPlan = async (req, res, next) => {
       }
 
       numberOfPages += book.totalPages;
-
-      const { _id, title, author, year, totalPages, readPages, review, rating } = book;
+      book.status = READ;
+      const { _id, title, author, year, status, totalPages, readPages, review, rating } = book;
 
       const validateBook = {
         _id,
         title,
         author,
         year,
+        status,
         totalPages,
         readPages,
         review,
         rating,
       };
 
+      console.log(validateBook);
       selectedBooks.push(validateBook);
     }
 
     const pagesPerDay = Math.ceil(numberOfPages / duration);
 
-    const training = await Planning.findOne({ _id: user?.training });
+    const training = await Planning.findOne({ _id: user?.planning });
 
     if (training) {
       return res.status(400).json({
         status: 'error',
         code: 400,
-        message: 'you have active training',
+        message: 'you already have active planning',
       });
     }
 
@@ -80,11 +83,23 @@ const startPlan = async (req, res, next) => {
       endDate,
       duration,
       books,
+      status: 'read',
       pagesPerDay,
+      booksToRead: selectedBooks,
       totalPages: numberOfPages,
     });
 
-    user.training = createTraining._id;
+    if (selectedBooks.status === DONE) {
+      return res.status(200).json({
+        status: 'success',
+        code: 200,
+        message: 'The training is over - well done',
+      });
+    }
+
+    //  '633f25d51a4db877138d3b65', '633f26651a4db877138d3b6f', '633f266a389366a932090682', '633f26ed2fe2c39a45ce8d05';
+
+    user.planning = createTraining._id;
     user.planning.push(createTraining);
 
     await user.save();
@@ -98,7 +113,8 @@ const startPlan = async (req, res, next) => {
         startDate: createTraining.startDate,
         endDate: createTraining.endDate,
         duration: createTraining.duration,
-        books: selectedBooks,
+        status: 'read',
+        booksToRead: selectedBooks,
         pagesPerDay: createTraining.pagesPerDay,
         totalPages: createTraining.totalPages,
         readPages: createTraining.readPages,

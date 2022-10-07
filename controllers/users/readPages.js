@@ -7,7 +7,7 @@ const addReadPages = async (req, res, next) => {
   try {
     const user = req.user;
     let { date, pages } = req.body;
-    const { DONE } = bookStatus;
+    const { READ, DONE } = bookStatus;
 
     const training = await Planning.findOne({
       _id: user?.planning,
@@ -23,28 +23,53 @@ const addReadPages = async (req, res, next) => {
 
     let book = null;
     let numberOfPages = 0;
+    let diff = 0;
+    let currentIteration = 0;
 
     for (let i = 0; i < training.booksToRead.length; i++) {
+      currentIteration = i;
       const arrayBook = await Book.findOne({ _id: training.booksToRead[i] });
-
+      // console.log(arrayBook);
       if (arrayBook?.totalPages === arrayBook?.readPages) {
         arrayBook.status = DONE;
+        arrayBook.save();
         continue;
       }
 
       arrayBook.readPages += pages;
-      arrayBook.readPages += training.rest;
+      // arrayBook.readPages += training.rest;
+
       training.totalReadPages += pages;
 
-      training.rest = 0;
-
       if (arrayBook.readPages >= arrayBook.totalPages) {
-        training.rest = arrayBook.readPages - arrayBook.totalPages;
-        // for (let n = 0; n < arrayBook.length; n++) {
-        //   arrayBook[n].readPages += training.rest;
-        // }
+        console.log(arrayBook.readPages);
+        diff = arrayBook.readPages - arrayBook.totalPages;
+        console.log(diff);
         arrayBook.readPages = arrayBook.totalPages;
+        arrayBook.status = DONE;
+        arrayBook.save();
+        while (diff !== 0) {
+          currentIteration++;
+          console.log(currentIteration);
+          const nextBook = await Book.findOne({
+            _id: training.booksToRead[currentIteration],
+          });
+          console.log(nextBook);
+          nextBook.readPages += diff;
+          if (nextBook.readPages > nextBook.totalPages) {
+            diff = nextBook.readPages - nextBook.totalPages;
+            nextBook.readPages = nextBook.totalPages;
+            nextBook.status = DONE;
+            await nextBook.save();
+          } else {
+            diff = 0;
+          }
+        }
       }
+
+      // if (arrayBook.readPages <= arrayBook.totalPages) {
+
+      // }
 
       if (training.totalReadPages > training.totalPages) {
         training.totalReadPages = training.totalPages;
@@ -60,6 +85,7 @@ const addReadPages = async (req, res, next) => {
         year,
         totalPages,
         readPages,
+        status: READ,
         resume,
         rating,
       };
@@ -79,7 +105,7 @@ const addReadPages = async (req, res, next) => {
     }, training.booksToRead);
 
     if (training.totalReadPages === training.totalPages) {
-      await Planning.deleteOne({ _id: user.training });
+      await Planning.deleteOne({ _id: user.planning });
 
       user.training = null;
 
@@ -98,6 +124,7 @@ const addReadPages = async (req, res, next) => {
             duration: training.duration,
             pagesReadPerDay: training.pagesPerDay,
             totalPages: training.totalPages,
+            status: DONE,
             totalReadPages: training.totalReadPages,
             booksToRead: training.booksToRead,
             results: training.results,
@@ -128,6 +155,7 @@ const addReadPages = async (req, res, next) => {
           duration: training.duration,
           pagesPerDay: training.pagesPerDay,
           totalPages: training.totalPages,
+          status: training.booksToRead.status,
           totalReadPages: training.totalReadPages,
           booksToRead: training.booksToRead,
           results: training.results,
@@ -138,62 +166,5 @@ const addReadPages = async (req, res, next) => {
     next(err);
   }
 };
-
-// const addReadPages = async (req, res) => {
-//   const user = req.user;
-//   const { pages } = req.body;
-//   const { READ, DONE } = bookStatus;
-
-//   const book = await Planning.findOne({ _id: user.planning });
-//   const booksToRead = book.booksToRead;
-//   console.log(booksToRead);
-
-//   // if (book.totalPages < book.readPages + pages) {
-//   //   return res.status(403).send({ message: `Maximum allowed pages is: ${book.totalPages - book.readPages}` });
-//   // }
-
-//   book.readPages += pages;
-
-//   if (book.readPages > 0) {
-//     book.status = READ;
-//   }
-
-//   if (book.totalPages === book.readPages) {
-//     book.status = DONE;
-//     return res.status(200).json({
-//       status: 'success',
-//       code: 200,
-//       message: 'The book has been read',
-//     });
-//   }
-
-//   console.log(book.readPages);
-//   await book.save();
-
-//   const planning = await Planning.findOne({ _id: user?.planning }).populate('books');
-//   const books = planning.books;
-
-//   if (!books) {
-//     return res.status(403).send({ message: 'You must start a planning first' });
-//   }
-
-//   if (!book) {
-//     return res.status(403).send({
-//       message: 'You have already read all the books from this planning',
-//     });
-//   }
-//   const date = DateTime.now().setZone('Europe/Kiev').toObject();
-
-//   let minute = date.minute?.toString();
-
-//   if (date.minute.toString().length === 1) {
-//     minute = '0' + date.minute;
-//   }
-//   const time = `${date.year}-${date.month}-${date.day} ${date.hour}:${minute}`;
-//   planning.results.push({ time, pagesCount: pages });
-//   await planning.save();
-
-//   return res.status(200).send({ book, planning });
-// };
 
 module.exports = addReadPages;

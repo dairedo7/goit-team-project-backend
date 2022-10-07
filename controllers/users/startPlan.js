@@ -1,4 +1,4 @@
-const { Planning, Book } = require('../../models');
+const { Planning, User, Book } = require('../../models');
 const { DateTime } = require('luxon');
 const { bookStatus } = require('../../helpers/constants');
 
@@ -8,7 +8,7 @@ const startPlan = async (req, res, next) => {
     const { READ, DONE } = bookStatus;
     const user = req.user;
 
-    console.log(books);
+    console.log(user);
 
     const startTime = startDate.split('-');
     const endTime = endDate.split('-');
@@ -27,9 +27,13 @@ const startPlan = async (req, res, next) => {
     const selectedBooks = [];
     let numberOfPages = 0;
 
+    const userBooks = await User.findOne({
+      _id: user._id,
+    }).populate('books');
+
     for (let i = 0; i < books.length; i++) {
       const book = await Book.findOne({ _id: books[i] });
-      console.log(book);
+      // console.log(book);
       if (!book || !user?.books.includes(book?._id)) {
         return res.status(400).json({
           status: 'error',
@@ -48,6 +52,7 @@ const startPlan = async (req, res, next) => {
 
       numberOfPages += book.totalPages;
       book.status = READ;
+      book.save();
       const { _id, title, author, year, status, totalPages, readPages, review, rating } = book;
 
       const validateBook = {
@@ -62,7 +67,10 @@ const startPlan = async (req, res, next) => {
         rating,
       };
 
-      console.log(validateBook);
+      const filterBooks = userBooks.books.filter(({ title }) => title === book.title);
+
+      await Book.updateMany({ title: book.title }, filterBooks._id, { new: true });
+
       selectedBooks.push(validateBook);
     }
 
@@ -97,13 +105,15 @@ const startPlan = async (req, res, next) => {
       });
     }
 
-    //  '633f25d51a4db877138d3b65', '633f26651a4db877138d3b6f', '633f266a389366a932090682', '633f26ed2fe2c39a45ce8d05';
-
     user.planning = createTraining._id;
     user.planning.push(createTraining);
 
+    userBooks.books.status = READ;
+
     await user.save();
     await createTraining.save();
+
+    console.log(selectedBooks);
 
     return res.status(201).json({
       status: 'success',
@@ -113,7 +123,7 @@ const startPlan = async (req, res, next) => {
         startDate: createTraining.startDate,
         endDate: createTraining.endDate,
         duration: createTraining.duration,
-        status: 'read',
+        status: createTraining.status,
         booksToRead: selectedBooks,
         pagesPerDay: createTraining.pagesPerDay,
         totalPages: createTraining.totalPages,

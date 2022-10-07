@@ -11,8 +11,17 @@ const planningSchema = new Schema(
     books: [{ type: SchemaTypes.ObjectId, ref: 'book' }],
     booksToRead: Array,
     pagesPerDay: Number,
-    results: [{ time: String, pagesCount: Number }],
+    results: [{ date: String, pagesCount: Number }],
     user: [{ type: SchemaTypes.ObjectId, ref: 'user' }],
+    totalPages: Number,
+    totalReadPages: {
+      type: Number,
+      default: 0,
+    },
+    rest: {
+      type: Number,
+      default: null,
+    },
     // status: {
     //   type: String,
     //   inprocess: INPROCESS,

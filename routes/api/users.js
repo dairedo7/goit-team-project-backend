@@ -4,7 +4,7 @@ const { startPlan, readPages, removePlanning, getPlanningInfo, getCurrent } = re
 
 const router = express.Router();
 
-router.get('/current', auth, wrapper(getCurrent));
+router.get('/', auth, wrapper(getCurrent));
 
 router.get('/planning', auth, wrapper(getPlanningInfo));
 

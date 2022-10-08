@@ -67,7 +67,7 @@ const joiBookSchema = Joi.object({
 
 const joiBookUpdateSchema = Joi.object({
   rating: Joi.string().valueOf(...[0, 1, 2, 3, 4, 5]),
-  resume: Joi.string().max(300).required(),
+  resume: Joi.string().max(300),
 });
 
 const Book = model('book', bookSchema);

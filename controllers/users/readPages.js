@@ -1,7 +1,6 @@
 const { Planning, Book } = require('../../models');
 const { DateTime } = require('luxon');
 const { bookStatus } = require('../../helpers/constants');
-// const { array } = require('joi');
 
 const addReadPages = async (req, res, next) => {
   try {
@@ -12,6 +11,8 @@ const addReadPages = async (req, res, next) => {
     const training = await Planning.findOne({
       _id: user?.planning,
     }).populate('booksToRead');
+
+    console.log(training);
 
     if (!training) {
       return res.status(403).json({
@@ -28,26 +29,21 @@ const addReadPages = async (req, res, next) => {
 
     for (let i = 0; i < training.booksToRead.length; i++) {
       currentIteration = i;
-      const arrayBook = await Book.findOne({ _id: training.booksToRead[i] });
-      // console.log(arrayBook);
-      if (arrayBook?.totalPages === arrayBook?.readPages) {
-        arrayBook.status = DONE;
-        arrayBook.save();
+      const currentBook = await Book.findOne({ _id: training.booksToRead[i] });
+      if (currentBook?.totalPages === currentBook?.readPages) {
+        currentBook.status = DONE;
+        currentBook.save();
         continue;
       }
 
-      arrayBook.readPages += pages;
-      // arrayBook.readPages += training.rest;
-
+      currentBook.readPages += pages;
       training.totalReadPages += pages;
 
-      if (arrayBook.readPages >= arrayBook.totalPages) {
-        console.log(arrayBook.readPages);
-        diff = arrayBook.readPages - arrayBook.totalPages;
-        console.log(diff);
-        arrayBook.readPages = arrayBook.totalPages;
-        arrayBook.status = DONE;
-        arrayBook.save();
+      if (currentBook.readPages >= currentBook.totalPages) {
+        diff = currentBook.readPages - currentBook.totalPages;
+        currentBook.readPages = currentBook.totalPages;
+        currentBook.status = DONE;
+        await currentBook.save();
         while (diff !== 0) {
           currentIteration++;
           console.log(currentIteration);
@@ -56,6 +52,7 @@ const addReadPages = async (req, res, next) => {
           });
           console.log(nextBook);
           nextBook.readPages += diff;
+          await nextBook.save();
           if (nextBook.readPages > nextBook.totalPages) {
             diff = nextBook.readPages - nextBook.totalPages;
             nextBook.readPages = nextBook.totalPages;
@@ -67,17 +64,13 @@ const addReadPages = async (req, res, next) => {
         }
       }
 
-      // if (arrayBook.readPages <= arrayBook.totalPages) {
-
-      // }
-
       if (training.totalReadPages > training.totalPages) {
         training.totalReadPages = training.totalPages;
       }
 
       await training.save();
 
-      const { _id, title, author, year, totalPages, readPages, resume, rating } = arrayBook;
+      const { _id, title, author, year, totalPages, readPages, resume, rating } = currentBook;
       const validateBook = {
         _id,
         title,
@@ -90,7 +83,7 @@ const addReadPages = async (req, res, next) => {
         rating,
       };
 
-      await arrayBook.save();
+      await currentBook.save();
 
       book = validateBook;
       numberOfPages = pages;
@@ -142,6 +135,9 @@ const addReadPages = async (req, res, next) => {
     training.results.push({ date, pagesCount: pages });
 
     await training.save();
+    const upTraining = await Planning.findOne({
+      _id: user?.planning,
+    }).populate('booksToRead');
 
     return res.status(200).json({
       status: 'success',
@@ -149,16 +145,16 @@ const addReadPages = async (req, res, next) => {
       data: {
         book,
         planning: {
-          _id: training._id,
-          start: training.startDate,
-          end: training.endDate,
-          duration: training.duration,
-          pagesPerDay: training.pagesPerDay,
-          totalPages: training.totalPages,
-          status: training.booksToRead.status,
-          totalReadPages: training.totalReadPages,
-          booksToRead: training.booksToRead,
-          results: training.results,
+          _id: upTraining._id,
+          start: upTraining.startDate,
+          end: upTraining.endDate,
+          duration: upTraining.duration,
+          pagesPerDay: upTraining.pagesPerDay,
+          totalPages: upTraining.totalPages,
+          status: upTraining.booksToRead.status,
+          totalReadPages: upTraining.totalReadPages,
+          booksToRead: upTraining.booksToRead,
+          results: upTraining.results,
         },
       },
     });

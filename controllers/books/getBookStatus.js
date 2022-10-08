@@ -12,10 +12,12 @@ const getCurrent = async (req, res, next) => {
   const result = [];
 
   if (!books) {
-    return res.status(404).json({
+    return res.status(200).json({
       status: 'error',
-      code: 404,
-      message: 'no books found',
+      code: 200,
+      data: {
+        books: [],
+      },
     });
   }
 

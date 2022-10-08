@@ -625,7 +625,7 @@
                 }
             }
         },
-        "/user/current": {
+        "/user": {
             "get": {
                 "tags": [
                     "User"

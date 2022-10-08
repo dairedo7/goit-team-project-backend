@@ -18,16 +18,6 @@ const planningSchema = new Schema(
       type: Number,
       default: 0,
     },
-    rest: {
-      type: Number,
-      default: null,
-    },
-    // status: {
-    //   type: String,
-    //   inprocess: INPROCESS,
-    //   finishedbook: FINISHEDBOOK,
-    //   finishedtraining: FINISHEDTRAINING,
-    // },
   },
   { versionKey: false, timestamps: true }
 );

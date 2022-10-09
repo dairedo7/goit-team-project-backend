@@ -70,9 +70,9 @@ const addReadPages = async (req, res, next) => {
         }
       }
 
-      if (training.totalReadPages > training.totalPages) {
-        training.totalReadPages = training.totalPages;
-      }
+      // if (training.totalReadPages > training.totalPages) {
+      //   training.totalReadPages = training.totalPages;
+      // }
 
       await training.save();
 

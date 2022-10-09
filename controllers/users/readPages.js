@@ -36,14 +36,13 @@ const addReadPages = async (req, res, next) => {
       if (currentBook?.totalPages <= currentBook?.readPages) {
         currentBook.status = DONE;
         await currentBook.save();
-        await training.save();
+        // await training.save();
         continue;
       }
 
       currentBook.readPages += pages;
       training.totalReadPages += pages;
-      //   6341a7084d763f3ba0ac7f14 6341a73228f8a8c9d4b5ffd0
-      // 6341a7676229cdd1992262fa
+      //   6342bde15f19915cf63b119d 6342bdeb8ace2d0c1ebf6e47 6342bdf2afb46f6acc4b6d07
       if (currentBook.readPages >= currentBook.totalPages) {
         diff = currentBook.readPages - currentBook.totalPages;
         currentBook.readPages = currentBook.totalPages;
@@ -119,7 +118,7 @@ const addReadPages = async (req, res, next) => {
       return res.status(200).json({
         status: 'success',
         code: 200,
-        message: 'Congratz! You have managed to read all the books',
+        message: 'Plan finished',
         data: {
           book,
           planning: {
@@ -151,8 +150,31 @@ const addReadPages = async (req, res, next) => {
       _id: user?.planning,
     }).populate('books');
 
+    if (training.totalReadPages !== training.totalPages) {
+      return res.status(200).json({
+        status: 'success',
+        message: 'Pages added',
+        code: 200,
+        data: {
+          book,
+          planning: {
+            _id: upTraining._id,
+            start: upTraining.startDate,
+            end: upTraining.endDate,
+            duration: upTraining.duration,
+            pagesPerDay: upTraining.pagesPerDay,
+            totalPages: upTraining.totalPages,
+            status: upTraining.books.status,
+            totalReadPages: upTraining.totalReadPages,
+            books: upTraining.books,
+            results: upTraining.results,
+          },
+        },
+      });
+    }
     return res.status(200).json({
       status: 'success',
+      message: 'Book finished',
       code: 200,
       data: {
         book,

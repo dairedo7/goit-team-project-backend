@@ -49,7 +49,7 @@ const addReadPages = async (req, res, next) => {
         currentBook.readPages = currentBook.totalPages;
         currentBook.status = DONE;
         await currentBook.save();
-        await training.save();
+        // await training.save();
         while (diff !== 0 && currentIteration < training.books.length) {
           currentIteration++;
           if (currentIteration < training.books.length) {

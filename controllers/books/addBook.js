@@ -22,19 +22,17 @@ const addBook = async (req, res) => {
   } else {
     await user?.save();
     res.status(201).json({
-      data: {
-        result: {
-          _id: result._id,
-          title: result.title,
-          author: result.author,
-          year: result.year,
-          totalPages: result.totalPages,
-          readPages: result.readPages,
-          resume: result.resume,
-          rating: result.rating,
-          user: result.user,
-          status: result.status,
-        },
+      result: {
+        _id: result._id,
+        title: result.title,
+        author: result.author,
+        year: result.year,
+        totalPages: result.totalPages,
+        readPages: result.readPages,
+        resume: result.resume,
+        rating: result.rating,
+        user: result.user,
+        status: result.status,
       },
     });
   }

@@ -21,6 +21,8 @@ const getCurrent = async (req, res, next) => {
     });
   }
 
+  console.log(books);
+
   books.filter((book) => {
     if (status === PLAN && book.status === PLAN) {
       result.push(book);

@@ -30,6 +30,7 @@ const addReadPages = async (req, res, next) => {
       currentIteration = i;
 
       const currentBook = await Book.findOne({ _id: training.books[i] });
+      // const planning
       // console.log(training._id);
       // console.log(currentBook._id);
       if (currentBook?.totalPages <= currentBook?.readPages) {
@@ -55,17 +56,15 @@ const addReadPages = async (req, res, next) => {
             const nextBook = await Book.findOne({
               _id: training.books[currentIteration],
             });
-
             nextBook.readPages += diff;
             console.log(nextBook.readPages);
             await nextBook.save();
-            await training.save();
+
             if (nextBook.readPages > nextBook.totalPages) {
               diff = nextBook.readPages - nextBook.totalPages;
               nextBook.readPages = nextBook.totalPages;
               nextBook.status = DONE;
               await nextBook.save();
-              await training.save();
             } else {
               diff = 0;
             }

@@ -22,7 +22,7 @@ const addReadPages = async (req, res, next) => {
     }
 
     let book = null;
-    let numberOfPages = 0;
+    // let numberOfPages = 0;
     let diff = 0;
     let currentIteration = 0;
 
@@ -30,25 +30,22 @@ const addReadPages = async (req, res, next) => {
       currentIteration = i;
 
       const currentBook = await Book.findOne({ _id: training.books[i] });
-      // const planning
-      // console.log(training._id);
-      // console.log(currentBook._id);
+
       if (currentBook?.totalPages <= currentBook?.readPages) {
         currentBook.status = DONE;
         await currentBook.save();
-        // await training.save();
         continue;
       }
 
       currentBook.readPages += pages;
       training.totalReadPages += pages;
-      //   6342bde15f19915cf63b119d 6342bdeb8ace2d0c1ebf6e47 6342bdf2afb46f6acc4b6d07
+
       if (currentBook.readPages >= currentBook.totalPages) {
         diff = currentBook.readPages - currentBook.totalPages;
         currentBook.readPages = currentBook.totalPages;
         currentBook.status = DONE;
         await currentBook.save();
-        // await training.save();
+
         while (diff !== 0 && currentIteration < training.books.length) {
           currentIteration++;
           if (currentIteration < training.books.length) {
@@ -96,7 +93,7 @@ const addReadPages = async (req, res, next) => {
       await currentBook.save();
 
       book = validateBook;
-      numberOfPages = pages;
+      // numberOfPages = pages;
 
       break;
     }
@@ -141,7 +138,7 @@ const addReadPages = async (req, res, next) => {
     const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
 
     date = currentDate.toFormat('yyyy-LL-dd');
-    pages = numberOfPages;
+    // pages = numberOfPages;
 
     training.results.push({ date, pagesCount: pages });
 

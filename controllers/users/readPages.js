@@ -22,7 +22,7 @@ const addReadPages = async (req, res, next) => {
     }
 
     let book = null;
-    let numberOfPages = 0;
+    // let numberOfPages = 0;
     let diff = 0;
     let currentIteration = 0;
 
@@ -93,7 +93,7 @@ const addReadPages = async (req, res, next) => {
       await currentBook.save();
 
       book = validateBook;
-      numberOfPages = pages;
+      // numberOfPages = pages;
 
       break;
     }
@@ -138,7 +138,7 @@ const addReadPages = async (req, res, next) => {
     const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
 
     date = currentDate.toFormat('yyyy-LL-dd');
-    pages = numberOfPages;
+    // pages = numberOfPages;
 
     training.results.push({ date, pagesCount: pages });
 

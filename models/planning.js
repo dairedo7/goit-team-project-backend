@@ -1,7 +1,5 @@
 const Joi = require('joi');
 const { Schema, SchemaTypes, model } = require('mongoose');
-// const { INPROCESS, FINISHEDBOOK, FINISHEDTRAINING } = require('../../');
-// const { PLAN } = require('../helpers/constants');
 
 const planningSchema = new Schema(
   {

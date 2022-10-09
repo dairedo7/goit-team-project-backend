@@ -190,20 +190,26 @@
                 }
             }
         },
-        "/auth/:token": {
+        "/auth/google-signin": {
             "get": {
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Google token",
+                "summary": "Google registration",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
-                        "content": {}
-                    },
-                    "403": {
-                        "description": "Not registered",
-                        "content": {}
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GoogleResponse"
+                                }
+                            }
+                        },
+                        "403": {
+                            "description": "Not registered",
+                            "content": {}
+                        }
                     }
                 }
             }
@@ -252,6 +258,52 @@
                     },
                     "404": {
                         "description": "Invalid user / Invalid session",
+                        "content": {}
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Book"
+                ],
+                "summary": "Update a book",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "description": "Book object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBookRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateBookResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request (invalid id) / No token provided",
+                        "content": {}
+                    },
+                    "401": {
+                        "description": "Unauthorized (invalid access token)",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Book not found / Invalid user / Invalid session",
                         "content": {}
                     }
                 }
@@ -340,60 +392,6 @@
             }
         },
         "/book/{bookId}": {
-            "put": {
-                "tags": [
-                    "Book"
-                ],
-                "summary": "Update a book",
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "bookId",
-                        "in": "path",
-                        "description": "Book's id ('id' field in book's object)",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "description": "Book object",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/UpdateBookRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/UpdateBookResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request (invalid id) / No token provided",
-                        "content": {}
-                    },
-                    "401": {
-                        "description": "Unauthorized (invalid access token)",
-                        "content": {}
-                    },
-                    "404": {
-                        "description": "Book not found / Invalid user / Invalid session",
-                        "content": {}
-                    }
-                }
-            },
             "delete": {
                 "tags": [
                     "Book"
@@ -625,7 +623,7 @@
                 }
             }
         },
-        "/user/current": {
+        "/user": {
             "get": {
                 "tags": [
                     "User"
@@ -763,6 +761,37 @@
                                 "type": "string",
                                 "description": "Session's access token (needed for all requests)",
                                 "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+                            }
+                        }
+                    }
+                }
+            },
+            "GoogleResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "description": "Session's access token (needed for all requests)",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmMyMDg1YmQwOTM2NTI4MTA3Y2UyNzQiLCJzaWQiOiI1ZmMyZDJmY2UxZDIwNTA2NzAyYmRkMjIiLCJpYXQiOjE2MDY2MDM1MTYsImV4cCI6MTYwNjYwNzExNn0.rJ_QjU4KvA76H96RHsvOBChK0Vjbd0NmqjMxdQVJIXA"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "User's id",
+                                "example": "63319c350790a882e0c70f3b"
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "User's name",
+                                "example": "User"
+                            },
+                            "email": {
+                                "type": "string",
+                                "description": "User's email",
+                                "format": "email",
+                                "example": "example@gmail.com"
                             }
                         }
                     }
@@ -951,9 +980,16 @@
                 }
             },
             "UpdateBookRequest": {
-                "required": [],
+                "required": [
+                    "bookId"
+                ],
                 "type": "object",
                 "properties": {
+                    "bookId": {
+                        "type": "string",
+                        "description": "Book's id",
+                        "example": "07ef3f4358b773378699381"
+                    },
                     "resume": {
                         "type": "string",
                         "description": "Book's review",

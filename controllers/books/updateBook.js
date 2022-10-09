@@ -4,7 +4,6 @@ const { requestError } = require('../../helpers/requestError');
 
 const updateBook = async (req, res) => {
   const { bookId } = req.body;
-  console.log(bookId);
 
   const result = await Book.findByIdAndUpdate(bookId, req.body, { new: true });
 

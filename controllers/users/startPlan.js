@@ -5,10 +5,10 @@ const { bookStatus } = require('../../helpers/constants');
 const startPlan = async (req, res, next) => {
   try {
     const { startDate, endDate, books } = req.body;
-    const { READ, DONE } = bookStatus;
+    const { READ } = bookStatus;
     const user = req.user;
 
-    console.log(user);
+    // console.log(user);
 
     const startTime = startDate.split('-');
     const endTime = endDate.split('-');
@@ -27,12 +27,8 @@ const startPlan = async (req, res, next) => {
     const selectedBooks = [];
     let numberOfPages = 0;
 
-    // const userBooks = await User.findOne({
-    //   _id: user._id,
-    // }).populate('books');
-
-    books.forEach(async (book) => {
-      book = await Book.findOne({ _id: book });
+    for (let i = 0; i < books.length; i++) {
+      const book = await Book.findOne({ _id: books[i] });
 
       if (!book || !user?.books.includes(book?._id)) {
         return res.status(400).json({
@@ -68,9 +64,9 @@ const startPlan = async (req, res, next) => {
       };
 
       selectedBooks.push(validateBook);
-    });
+    }
 
-    const pagesPerDay = Math.round(numberOfPages / duration);
+    const pagesPerDay = Math.ceil(numberOfPages / duration);
 
     const training = await Planning.findOne({ _id: user?.planning });
 
@@ -92,16 +88,6 @@ const startPlan = async (req, res, next) => {
       booksToRead: selectedBooks,
       totalPages: numberOfPages,
     });
-
-    const allBooksRead = selectedBooks.every(({ status }) => status === DONE);
-
-    if (allBooksRead) {
-      return res.status(200).json({
-        status: 'success',
-        code: 200,
-        message: 'The training is over - well done',
-      });
-    }
 
     user.planning = createTraining._id;
     user.planning.push(createTraining);

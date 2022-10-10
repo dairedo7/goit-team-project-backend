@@ -31,20 +31,24 @@ const addReadPages = async (req, res, next) => {
 
       const currentBook = await Book.findOne({ _id: training.books[i] });
 
+      book = currentBook;
       if (currentBook?.totalPages <= currentBook?.readPages) {
         currentBook.status = DONE;
-        await currentBook.save();
+        book = await currentBook.save();
         continue;
       }
 
       currentBook.readPages += pages;
+      book = await currentBook.save();
       training.totalReadPages += pages;
+      await training.save();
 
       if (currentBook.readPages >= currentBook.totalPages) {
         diff = currentBook.readPages - currentBook.totalPages;
         currentBook.readPages = currentBook.totalPages;
         currentBook.status = DONE;
-        await currentBook.save();
+        book = await currentBook.save();
+        // res json response object
 
         while (diff !== 0 && currentIteration < training.books.length) {
           currentIteration++;
@@ -53,19 +57,17 @@ const addReadPages = async (req, res, next) => {
               _id: training.books[currentIteration],
             });
             nextBook.readPages += diff;
-            console.log(nextBook.readPages);
-            await nextBook.save();
+            // console.log(nextBook.readPages);
+            book = await nextBook.save();
 
             if (nextBook.readPages > nextBook.totalPages) {
               diff = nextBook.readPages - nextBook.totalPages;
               nextBook.readPages = nextBook.totalPages;
               nextBook.status = DONE;
-              await nextBook.save();
+              book = await nextBook.save();
             } else {
               diff = 0;
             }
-          } else {
-            continue;
           }
         }
       }
@@ -74,39 +76,43 @@ const addReadPages = async (req, res, next) => {
       //   training.totalReadPages = training.totalPages;
       // }
 
-      await training.save();
+      // const currentBook = await Planning.findOne({ _id: training.books[i] });
 
-      const { _id, title, author, year, totalPages, readPages, resume, rating } = currentBook;
+      // const { _id, title, author, year, totalPages, readPages, resume, rating } = currentBook;
 
-      const validateBook = {
-        _id,
-        title,
-        author,
-        year,
-        totalPages,
-        readPages,
-        status: READ,
-        resume,
-        rating,
-      };
+      // const validateBook = {
+      //   _id,
+      //   title,
+      //   author,
+      //   year,
+      //   totalPages,
+      //   readPages,
+      //   resume,
+      //   rating,
+      // };
 
-      await currentBook.save();
+      // await currentBook.save();
 
-      book = validateBook;
+      // book = validateBook;
 
       break;
     }
 
-    training.books.forEach(function (item, index) {
-      if (item._id.equals(book._id)) {
-        this[index] = book;
-      }
-    }, training.books);
+    // training.books.forEach(function (item, index) {
+    //   if (item._id.equals(book._id)) {
+    //     this[index] = book;
+    //   }
+    // }, training.books);
 
-    if (training.totalReadPages === training.totalPages) {
-      await Planning.deleteOne({ _id: user.planning });
+    const currentTraining = await Planning.findOne({
+      _id: user?.planning,
+    }).populate('books');
+
+    console.log('TotalReadPages', training.totalReadPages);
+    console.log('ReadPages', currentTraining.totalPages);
+    if (training.totalReadPages >= currentTraining.totalPages) {
+      // await Planning.deleteOne({ _id: user.planning });
       await Planning.findByIdAndRemove(training._id);
-
       user.planning = [];
 
       await user.save();
@@ -118,16 +124,16 @@ const addReadPages = async (req, res, next) => {
         data: {
           book,
           planning: {
-            _id: training._id,
-            start: training.startDate,
-            end: training.endDate,
-            duration: training.duration,
-            pagesReadPerDay: training.pagesPerDay,
-            totalPages: training.totalPages,
+            _id: currentTraining._id,
+            start: currentTraining.startDate,
+            end: currentTraining.endDate,
+            duration: currentTraining.duration,
+            pagesReadPerDay: currentTraining.pagesPerDay,
+            totalPages: currentTraining.totalPages,
             status: DONE,
-            totalReadPages: training.totalReadPages,
-            books: training.books,
-            results: training.results,
+            totalReadPages: currentTraining.totalReadPages,
+            books: currentTraining.books,
+            results: currentTraining.results,
           },
         },
       });
@@ -145,6 +151,7 @@ const addReadPages = async (req, res, next) => {
     const upTraining = await Planning.findOne({
       _id: user?.planning,
     }).populate('books');
+    console.log(upTraining);
 
     if (book.readPages === book.totalPages) {
       return res.status(200).json({
@@ -154,16 +161,16 @@ const addReadPages = async (req, res, next) => {
         data: {
           book,
           planning: {
-            _id: training._id,
-            start: training.startDate,
-            end: training.endDate,
-            duration: training.duration,
-            pagesPerDay: training.pagesPerDay,
-            totalPages: training.totalPages,
-            status: training.books.status,
-            totalReadPages: training.totalReadPages,
-            books: training.books,
-            results: training.results,
+            _id: upTraining._id,
+            start: upTraining.startDate,
+            end: upTraining.endDate,
+            duration: upTraining.duration,
+            pagesPerDay: upTraining.pagesPerDay,
+            totalPages: upTraining.totalPages,
+            status: upTraining.books.status,
+            totalReadPages: upTraining.totalReadPages,
+            books: upTraining.books,
+            results: upTraining.results,
           },
         },
       });

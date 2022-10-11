@@ -22,7 +22,6 @@ const userSignUpSchema = Schema(
     name: {
       type: String,
       required: [true, 'Name is required'],
-      unique: true,
     },
     books: [
       {
@@ -43,7 +42,7 @@ const userSignUpSchema = Schema(
 
 const joiUserSchema = Joi.object({
   email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'ua'] } })
     .required(),
   name: Joi.string(),
   password: Joi.string().required(),
@@ -53,7 +52,7 @@ const joiUserSchema = Joi.object({
 
 const joiLoginSchema = Joi.object({
   email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+    .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'ua'] } })
     .required(),
   password: Joi.string().required(),
 });

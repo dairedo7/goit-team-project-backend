@@ -7,7 +7,7 @@ const addReadPages = async (req, res, next) => {
     const user = req.user;
 
     let { date, pages } = req.body;
-    const { READ, DONE } = bookStatus;
+    const { DONE } = bookStatus;
 
     const training = await Planning.findOne({
       _id: user?.planning,
@@ -21,8 +21,15 @@ const addReadPages = async (req, res, next) => {
       });
     }
 
+    if (!pages) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'invalid pages value',
+      });
+    }
+
     let book = null;
-    // let numberOfPages = 0;
     let diff = 0;
     let currentIteration = 0;
 
@@ -57,7 +64,6 @@ const addReadPages = async (req, res, next) => {
               _id: training.books[currentIteration],
             });
             nextBook.readPages += diff;
-            // console.log(nextBook.readPages);
             book = await nextBook.save();
 
             if (nextBook.readPages > nextBook.totalPages) {
@@ -72,135 +78,65 @@ const addReadPages = async (req, res, next) => {
         }
       }
 
-      // if (training.totalReadPages > training.totalPages) {
-      //   training.totalReadPages = training.totalPages;
-      // }
-
-      // const currentBook = await Planning.findOne({ _id: training.books[i] });
-
-      // const { _id, title, author, year, totalPages, readPages, resume, rating } = currentBook;
-
-      // const validateBook = {
-      //   _id,
-      //   title,
-      //   author,
-      //   year,
-      //   totalPages,
-      //   readPages,
-      //   resume,
-      //   rating,
-      // };
-
-      // await currentBook.save();
-
-      // book = validateBook;
-
       break;
     }
-
-    // training.books.forEach(function (item, index) {
-    //   if (item._id.equals(book._id)) {
-    //     this[index] = book;
-    //   }
-    // }, training.books);
 
     const currentTraining = await Planning.findOne({
       _id: user?.planning,
     }).populate('books');
 
-    console.log('TotalReadPages', training.totalReadPages);
-    console.log('ReadPages', currentTraining.totalPages);
     if (training.totalReadPages >= currentTraining.totalPages) {
-      // await Planning.deleteOne({ _id: user.planning });
       await Planning.findByIdAndRemove(training._id);
       user.planning = [];
 
       await user.save();
-
-      return res.status(200).json({
-        status: 'success',
-        code: 200,
-        message: 'Plan finished',
-        data: {
-          book,
-          planning: {
-            _id: currentTraining._id,
-            start: currentTraining.startDate,
-            end: currentTraining.endDate,
-            duration: currentTraining.duration,
-            pagesReadPerDay: currentTraining.pagesPerDay,
-            totalPages: currentTraining.totalPages,
-            status: DONE,
-            totalReadPages: currentTraining.totalReadPages,
-            books: currentTraining.books,
-            results: currentTraining.results,
-          },
-        },
-      });
+      getTrainingResp(res, 'Plan finished', book, currentTraining);
     }
 
     const currentTime = date.split('-');
     const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
-
     date = currentDate.toFormat('yyyy-LL-dd');
-    // pages = numberOfPages;
 
     training.results.push({ date, pagesCount: pages });
-
     await training.save();
+
     const upTraining = await Planning.findOne({
       _id: user?.planning,
     }).populate('books');
     console.log(upTraining);
 
     if (book.readPages === book.totalPages) {
-      return res.status(200).json({
-        status: 'success',
-        message: 'Book finished',
-        code: 200,
-        data: {
-          book,
-          planning: {
-            _id: upTraining._id,
-            start: upTraining.startDate,
-            end: upTraining.endDate,
-            duration: upTraining.duration,
-            pagesPerDay: upTraining.pagesPerDay,
-            totalPages: upTraining.totalPages,
-            status: upTraining.books.status,
-            totalReadPages: upTraining.totalReadPages,
-            books: upTraining.books,
-            results: upTraining.results,
-          },
-        },
-      });
+      getTrainingResp(res, 'Book finished', book, upTraining);
     }
-
     if (training.totalReadPages !== training.totalPages) {
-      return res.status(200).json({
-        status: 'success',
-        message: 'Pages added',
-        code: 200,
-        data: {
-          book,
-          planning: {
-            _id: upTraining._id,
-            start: upTraining.startDate,
-            end: upTraining.endDate,
-            duration: upTraining.duration,
-            pagesPerDay: upTraining.pagesPerDay,
-            totalPages: upTraining.totalPages,
-            status: upTraining.books.status,
-            totalReadPages: upTraining.totalReadPages,
-            books: upTraining.books,
-            results: upTraining.results,
-          },
-        },
-      });
+      getTrainingResp(res, 'Pages added', book, upTraining);
     }
   } catch (err) {
     next(err);
   }
+};
+
+const getTrainingResp = (res, message, book, trainingStage) => {
+  return res.status(200).json({
+    status: 'success',
+    message: `${message}`,
+    code: 200,
+    data: {
+      book,
+      planning: {
+        _id: trainingStage._id,
+        start: trainingStage.startDate,
+        end: trainingStage.endDate,
+        duration: trainingStage.duration,
+        pagesPerDay: trainingStage.pagesPerDay,
+        totalPages: trainingStage.totalPages,
+        status: trainingStage.books.status,
+        totalReadPages: trainingStage.totalReadPages,
+        books: trainingStage.books,
+        results: trainingStage.results,
+      },
+    },
+  });
 };
 
 module.exports = addReadPages;

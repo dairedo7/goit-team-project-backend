@@ -9,11 +9,19 @@ const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
+
   const name = user.name;
+
   const passCompare = bcrypt.compare(password, user.password);
-  if (!user || !passCompare) {
-    throw new Unauthorized('Email or password is wrong');
+
+  const result = await passCompare;
+  if (!user) {
+    throw new Unauthorized('Current email does not exist');
   }
+  if (!result) {
+    throw new Unauthorized('Wrong password');
+  }
+
   const payload = {
     id: user._id,
   };

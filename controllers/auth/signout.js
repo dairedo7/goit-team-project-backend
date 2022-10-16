@@ -1,15 +1,17 @@
-const { User } = require('../../models');
+const { userServices } = require('../../services');
 const { Unauthorized } = require('http-errors');
 
 const signOut = async (req, res) => {
-  const { _id } = req.user;
+  let { _id, token } = req.user;
+  console.log(_id);
 
   if (!_id) {
     throw new Unauthorized('Not authorized');
   }
+  token = null;
+  await userServices.findUserAndUpdate(_id, token);
 
-  await User.findByIdAndUpdate(_id, { token: null });
-  res.status(204).json();
+  res.json({ status: 'success', code: 204, message: 'The user was successfully logged out' });
 };
 
 module.exports = signOut;

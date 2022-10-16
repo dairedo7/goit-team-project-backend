@@ -1,7 +1,8 @@
 const queryString = require('query-string');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
-const { User } = require('../../models');
+const { userServices } = require('../../services');
+
 const { SECRET_KEY } = process.env;
 
 const googleAuth = async (req, res) => {
@@ -43,18 +44,18 @@ const googleRedirect = async (req, res) => {
   const email = userData.data.email;
   const name = userData.data.name;
 
-  let user = await User.findOne({ email });
+  let user = await userServices.findUserByEmail(email);
   const password = SECRET_KEY;
 
   if (!user) {
-    user = await new User({ email, name, password }).save();
+    user = await userServices.addNewUserByGoogle(email, name, password);
   }
 
   const payload = {
     id: user._id,
   };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
-  await User.findByIdAndUpdate(user._id, { token });
+  await userServices.findUserById(user._id, token);
 
   return res.redirect(`${process.env.FRONTEND_URL}?token=${token}`);
 };

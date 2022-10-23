@@ -1,9 +1,9 @@
-const { User } = require("../../models");
+const { bookServices } = require('../../services');
 
 const getBooks = async (req, res) => {
   const user = req.user;
 
-  const { books } = await User.findOne({ _id: user }).populate("books");
+  const books = await bookServices.getUserBooks(user._id);
 
   res.json(books);
 };

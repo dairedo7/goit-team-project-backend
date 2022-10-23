@@ -1,11 +1,10 @@
-const { Book } = require('../../models');
-
+const { bookServices } = require('../../services');
 const { requestError } = require('../../helpers/requestError');
 
 const updateBook = async (req, res) => {
   const { bookId } = req.body;
 
-  const result = await Book.findByIdAndUpdate(bookId, req.body, { new: true });
+  const result = await bookServices.updateBook(bookId, req.body);
 
   if (!result) {
     throw requestError(404, 'Not found');

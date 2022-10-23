@@ -1,4 +1,4 @@
-const { Book, User } = require('../../models');
+const { bookServices } = require('../../services');
 
 const addBook = async (req, res) => {
   const book = req.body;
@@ -6,20 +6,20 @@ const addBook = async (req, res) => {
 
   const bookStatus = req.body.status;
 
-  const result = await Book.create({ ...book });
-  user?.books.push(result);
-
-  const { books } = await User.findOne({ _id: user._id }).populate('books');
-  console.log(books);
-  if (book.readPages > 0 && bookStatus === undefined) {
-    result.status = 'read';
-  }
+  const books = await bookServices.getUserBooks(user._id);
 
   const match = books.find(({ title }) => book.title === title);
 
   if (match) {
-    res.status(400).send({ message: `Book (${book.title}) already exists in your library` });
+    res.status(400).send({ message: `Book '${book.title}' already exists in your library` });
   } else {
+    const result = await bookServices.addBook(book);
+    user?.books.push(result);
+
+    if (book.readPages > 0 && bookStatus === undefined) {
+      result.status = 'read';
+    }
+
     await user?.save();
     res.status(201).json({
       data: {

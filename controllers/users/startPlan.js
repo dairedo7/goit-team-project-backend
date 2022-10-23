@@ -8,8 +8,6 @@ const startPlan = async (req, res, next) => {
     const { READ } = bookStatus;
     const user = req.user;
 
-    // console.log(user);
-
     const startTime = startDate.split('-');
     const endTime = endDate.split('-');
     const startDateObjArr = DateTime.local(Number(startTime[0]), Number(startTime[1]), Number(startTime[2]));

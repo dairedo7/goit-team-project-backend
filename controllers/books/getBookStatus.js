@@ -1,5 +1,5 @@
-const { User } = require('../../models');
 const { bookStatus } = require('../../helpers/constants');
+const { bookServices } = require('../../services');
 
 const getCurrent = async (req, res, next) => {
   const { PLAN, READ, DONE } = bookStatus;
@@ -7,7 +7,7 @@ const getCurrent = async (req, res, next) => {
   const user = req.user;
   const { status } = req.params;
 
-  const { books } = await User.findOne({ _id: user._id }).populate('books');
+  const books = await bookServices.getUserBooks(user._id);
 
   const result = [];
 

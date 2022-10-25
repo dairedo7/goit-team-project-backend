@@ -1,6 +1,6 @@
-const { Planning, Book } = require('../../models');
-const { DateTime } = require('luxon');
-const { bookStatus } = require('../../helpers/constants');
+const { DateTime } = require("luxon");
+const { bookStatus } = require("../../helpers/constants");
+const { planningServices } = require("../../services");
 
 const addReadPages = async (req, res, next) => {
   try {
@@ -9,23 +9,21 @@ const addReadPages = async (req, res, next) => {
     let { date, pages } = req.body;
     const { DONE } = bookStatus;
 
-    const training = await Planning.findOne({
-      _id: user?.planning,
-    }).populate('books');
+    const training = await planningServices.getActivePlanning(user.planning);
 
     if (!training) {
       return res.status(403).json({
-        status: 'error',
+        status: "error",
         code: 403,
-        message: 'no active training',
+        message: "no active planning",
       });
     }
 
     if (!pages) {
       return res.status(400).json({
-        status: 'error',
+        status: "error",
         code: 400,
-        message: 'invalid pages value',
+        message: "invalid pages value",
       });
     }
 
@@ -36,7 +34,9 @@ const addReadPages = async (req, res, next) => {
     for (let i = 0; i < training.books.length; i++) {
       currentIteration = i;
 
-      const currentBook = await Book.findOne({ _id: training.books[i] });
+      const currentBook = await planningServices.getCurrentBook(
+        training.books[i]
+      );
 
       book = currentBook;
       if (currentBook?.totalPages <= currentBook?.readPages) {
@@ -60,9 +60,9 @@ const addReadPages = async (req, res, next) => {
         while (diff !== 0 && currentIteration < training.books.length) {
           currentIteration++;
           if (currentIteration < training.books.length) {
-            const nextBook = await Book.findOne({
-              _id: training.books[currentIteration],
-            });
+            const nextBook = await planningServices.getCurrentBook(
+              training.books[currentIteration]
+            );
             nextBook.readPages += diff;
             book = await nextBook.save();
 
@@ -81,35 +81,35 @@ const addReadPages = async (req, res, next) => {
       break;
     }
 
-    const currentTraining = await Planning.findOne({
-      _id: user?.planning,
-    }).populate('books');
-
+    const currentTraining = await planningServices.getActivePlanning(
+      user.planning
+    );
     if (training.totalReadPages >= currentTraining.totalPages) {
-      await Planning.findByIdAndRemove(training._id);
+      await planningServices.removeById(training._id);
       user.planning = [];
 
       await user.save();
-      getTrainingResp(res, 'Plan finished', book, currentTraining);
+      getTrainingResp(res, "Plan finished", book, currentTraining);
     }
 
-    const currentTime = date.split('-');
-    const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
-    date = currentDate.toFormat('yyyy-LL-dd');
+    const currentTime = date.split("-");
+    const currentDate = DateTime.local(
+      Number(currentTime[0]),
+      Number(currentTime[1]),
+      Number(currentTime[2])
+    );
+    date = currentDate.toFormat("yyyy-LL-dd");
 
     training.results.push({ date, pagesCount: pages });
     await training.save();
 
-    const upTraining = await Planning.findOne({
-      _id: user?.planning,
-    }).populate('books');
-    console.log(upTraining);
+    const upTraining = await planningServices.getUpdatedTraning(user.planning);
 
     if (book.readPages === book.totalPages) {
-      getTrainingResp(res, 'Book finished', book, upTraining);
+      getTrainingResp(res, "Book finished", book, upTraining);
     }
     if (training.totalReadPages !== training.totalPages) {
-      getTrainingResp(res, 'Pages added', book, upTraining);
+      getTrainingResp(res, "Pages added", book, upTraining);
     }
   } catch (err) {
     next(err);
@@ -118,7 +118,7 @@ const addReadPages = async (req, res, next) => {
 
 const getTrainingResp = (res, message, book, trainingStage) => {
   return res.status(200).json({
-    status: 'success',
+    status: "success",
     message: `${message}`,
     code: 200,
     data: {

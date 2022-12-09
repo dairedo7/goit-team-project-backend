@@ -1,6 +1,6 @@
-const { User } = require('../models');
-const { Unauthorized } = require('http-errors');
-const jwt = require('jsonwebtoken');
+import { User } from '../models/index.js';
+import Unauthorized from 'http-errors';
+import jwt from 'jsonwebtoken';
 
 const { SECRET_KEY } = process.env;
 
@@ -26,4 +26,4 @@ const auth = async (req, res, next) => {
   }
 };
 
-module.exports = auth;
+export { auth };

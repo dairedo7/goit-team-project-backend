@@ -8,4 +8,4 @@ const wrapper = (ctrl) => {
   };
 };
 
-module.exports = wrapper;
+export { wrapper };

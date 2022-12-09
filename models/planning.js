@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { Schema, SchemaTypes, model } = require('mongoose');
+import Joi from 'joi';
+import { Schema, SchemaTypes, model } from 'mongoose';
 
 const planningSchema = new Schema(
   {
@@ -35,7 +35,4 @@ const joiPlanningSchema = Joi.object({
 
 const Planning = model('planning', planningSchema);
 
-module.exports = {
-  Planning,
-  joiPlanningSchema,
-};
+export { Planning, joiPlanningSchema };

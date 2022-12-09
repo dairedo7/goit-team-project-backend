@@ -1,16 +1,16 @@
-const signUp = require('./auth/signup');
-const signIn = require('./auth/signin');
-const signOut = require('./auth/signout');
-const { googleAuth, googleRedirect } = require('./auth/auth');
-const getCurrent = require('./users/getCurrent');
-const getBookStatus = require('./books/getBookStatus');
-const getPlanningInfo = require('./users/getPlanningInfo');
-const startPlan = require('./users/startPlan');
-const readPages = require('./users/readPages');
-const googleSignin = require('./auth/googleSignin');
-const removePlanning = require('./users/removePlanning');
+import { signUp } from './auth/signup.js';
+import { signIn } from './auth/signin.js';
+import { signOut } from './auth/signout.js';
+import { googleAuth, googleRedirect } from './auth/auth.js';
+import { getCurrent } from './users/getCurrent.js';
+import { getCurrentStatus } from './books/getBookStatus.js';
+import { getPlanningInfo } from './users/getPlanningInfo.js';
+import { startPlan } from './users/startPlan.js';
+import { addReadPages } from './users/readPages.js';
+import { googleSignin } from './auth/googleSignin.js';
+import { removePlanning } from './users/removePlanning.js';
 
-module.exports = {
+export {
   signUp,
   signIn,
   signOut,
@@ -18,9 +18,9 @@ module.exports = {
   googleRedirect,
   googleSignin,
   getCurrent,
-  getBookStatus,
+  getCurrentStatus,
   getPlanningInfo,
   startPlan,
-  readPages,
+  addReadPages,
   removePlanning,
 };

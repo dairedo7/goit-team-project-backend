@@ -1,7 +1,7 @@
-const { bookServices } = require('../../services');
-const { requestError } = require('../../helpers/requestError');
+import { bookServices } from '../../services/index.js';
+import { requestError } from '../../helpers/requestError.js';
 
-const removeBook = async (req, res) => {
+export const removeBook = async (req, res) => {
   const { bookId: id } = req.params;
   const theUser = req.user;
 
@@ -16,5 +16,3 @@ const removeBook = async (req, res) => {
     message: 'Book deleted',
   });
 };
-
-module.exports = removeBook;

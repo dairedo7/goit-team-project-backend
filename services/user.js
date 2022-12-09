@@ -1,4 +1,4 @@
-const { User } = require('../models');
+import { User } from '../models/index.js';
 
 const findUserByEmail = async (email) => {
   const findUserByEmail = await User.findOne({ email });
@@ -34,4 +34,11 @@ const updateToken = async (id, token) => {
   return newToken;
 };
 
-module.exports = { findUserByEmail, findUserById, addNewUserByGoogle, addNewUser, updateToken, findUserAndUpdate };
+export const userServices = {
+  findUserByEmail,
+  findUserById,
+  addNewUserByGoogle,
+  addNewUser,
+  updateToken,
+  findUserAndUpdate,
+};

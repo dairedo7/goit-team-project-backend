@@ -1,35 +1,25 @@
-const { Planning } = require("../../models");
-const { DateTime } = require("luxon");
-const { bookStatus } = require("../../helpers/constants");
-const { planningServices } = require("../../services");
+import { Planning } from '../../models/index.js';
+import { DateTime } from 'luxon';
+import { bookStatus } from '../../helpers/constants.js';
+import { planningServices } from '../../services/index.js';
 
-const startPlan = async (req, res, next) => {
+export const startPlan = async (req, res, next) => {
   try {
     const { startDate, endDate, books } = req.body;
     const { READ } = bookStatus;
     const user = req.user;
 
-    const startTime = startDate.split("-");
-    const endTime = endDate.split("-");
-    const startDateObjArr = DateTime.local(
-      Number(startTime[0]),
-      Number(startTime[1]),
-      Number(startTime[2])
-    );
-    const endDateObjArr = DateTime.local(
-      Number(endTime[0]),
-      Number(endTime[1]),
-      Number(endTime[2])
-    );
-    const duration = endDateObjArr
-      .diff(startDateObjArr, "days")
-      .toObject().days;
+    const startTime = startDate.split('-');
+    const endTime = endDate.split('-');
+    const startDateObjArr = DateTime.local(Number(startTime[0]), Number(startTime[1]), Number(startTime[2]));
+    const endDateObjArr = DateTime.local(Number(endTime[0]), Number(endTime[1]), Number(endTime[2]));
+    const duration = endDateObjArr.diff(startDateObjArr, 'days').toObject().days;
 
     if (!duration || duration < 1) {
       return res.status(400).json({
-        status: "error",
+        status: 'error',
         code: 400,
-        message: "wrong dates, use YYYY-MM-DD format or select current date",
+        message: 'wrong dates, use YYYY-MM-DD format or select current date',
       });
     }
 
@@ -41,15 +31,15 @@ const startPlan = async (req, res, next) => {
 
       if (!book || !user?.books.includes(book?._id)) {
         return res.status(400).json({
-          status: "error",
+          status: 'error',
           code: 400,
-          message: "wrong book id",
+          message: 'wrong book id',
         });
       }
 
       if (book.readPages !== 0) {
         return res.status(400).json({
-          status: "error",
+          status: 'error',
           code: 400,
           message: "you can't add book that you've already read",
         });
@@ -58,17 +48,7 @@ const startPlan = async (req, res, next) => {
       numberOfPages += book.totalPages;
       book.status = READ;
       book.save();
-      const {
-        _id,
-        title,
-        author,
-        year,
-        status,
-        totalPages,
-        readPages,
-        review,
-        rating,
-      } = book;
+      const { _id, title, author, year, status, totalPages, readPages, review, rating } = book;
 
       const validateBook = {
         _id,
@@ -91,9 +71,9 @@ const startPlan = async (req, res, next) => {
 
     if (training) {
       return res.status(400).json({
-        status: "error",
+        status: 'error',
         code: 400,
-        message: "you already have active planning",
+        message: 'you already have active planning',
       });
     }
 
@@ -102,7 +82,7 @@ const startPlan = async (req, res, next) => {
       endDate,
       duration,
       books,
-      status: "read",
+      status: 'read',
       pagesPerDay,
       booksToRead: selectedBooks,
       totalPages: numberOfPages,
@@ -115,7 +95,7 @@ const startPlan = async (req, res, next) => {
     await createTraining.save();
 
     return res.status(201).json({
-      status: "success",
+      status: 'success',
       code: 201,
       data: {
         _id: createTraining._id,
@@ -134,5 +114,3 @@ const startPlan = async (req, res, next) => {
     next(err);
   }
 };
-
-module.exports = startPlan;

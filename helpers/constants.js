@@ -16,7 +16,4 @@ const bookStatus = {
   DONE: 'done',
 };
 
-module.exports = {
-  httpCode,
-  bookStatus,
-};
+export { httpCode, bookStatus };

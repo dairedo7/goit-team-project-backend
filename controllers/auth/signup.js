@@ -1,10 +1,10 @@
-const { Conflict } = require('http-errors');
-const jwt = require('jsonwebtoken');
-
-const { userServices } = require('../../services');
+import Conflict from 'http-errors';
+import jwt from 'jsonwebtoken';
+import { userServices } from '../../services/index.js';
 
 const { SECRET_KEY } = process.env;
-const bcrypt = require('bcrypt');
+
+import bcrypt from 'bcrypt';
 
 const signUp = async (req, res) => {
   const { name, email, password } = req.body;
@@ -35,4 +35,4 @@ const signUp = async (req, res) => {
   });
 };
 
-module.exports = signUp;
+export { signUp };

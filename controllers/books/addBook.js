@@ -1,6 +1,5 @@
-const { bookServices } = require('../../services');
-
-const addBook = async (req, res) => {
+import { bookServices } from '../../services/index.js';
+export const addBook = async (req, res) => {
   const book = req.body;
   const user = req.user;
 
@@ -39,5 +38,3 @@ const addBook = async (req, res) => {
     });
   }
 };
-
-module.exports = addBook;

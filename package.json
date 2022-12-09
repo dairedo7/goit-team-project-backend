@@ -2,9 +2,10 @@
   "name": "template",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node ./bin/server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon ./bin/server.js",
+    "start": "node ./index.mjs",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./index.mjs",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },

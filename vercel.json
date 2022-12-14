@@ -4,12 +4,12 @@
     {
       "src": "./bin/server.js",
 
-      "use": "node ./index.mjs"
+      "use": "node ./bin/server.js"
     }
   ],
   "routes": [
     {
-      "src": "/(.index.mjs)",
+      "src": "/(./bin/server.js)",
       "dest": "index.mjs"
     }
   ]

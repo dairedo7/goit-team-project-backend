@@ -3,13 +3,13 @@
   "builds": [
     {
       "src": "./bin/server.js",
-      "use": "@now/node"
+      "use": "npm run start"
     }
   ],
   "routes": [
     {
       "src": "/(./bin/server.js)",
-      "dest": "index.mjs"
+      "dest": "./bin/server.js"
     }
   ]
 }

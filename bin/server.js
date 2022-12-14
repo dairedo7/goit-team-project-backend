@@ -19,8 +19,10 @@ mongoose
     console.log(port);
     app.listen(port || 3000); // Render the starting page
     app.get('/', function (req, res) {
-      res.render('views/link');
+      res.send('The API has been deployed');
+      // res.render('views/link');
     });
+
     // app.use("/link", (req, res) => {
     //   res.sendFile(path.join(__dirname, "../../public/link.html"));
     // });

@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "./bin/server.js",
-      "use": "npm run start"
+      "use": "@now/node"
     }
   ],
   "routes": [

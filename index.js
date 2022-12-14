@@ -5,7 +5,7 @@ const app = require('./app');
 
 const { DB_HOST } = process.env;
 
-const port = process.env.PORT || 3030;
+const port = 3030;
 
 // View engine
 app.set('view engine', 'ejs');

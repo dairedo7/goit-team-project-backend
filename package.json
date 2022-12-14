@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./index.js",
-    "start:dev": " nodemon ./index.mjs",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./index.js",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },

@@ -1,5 +1,5 @@
 const { Unauthorized } = require('http-errors');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { userServices } = require('../../services');
 

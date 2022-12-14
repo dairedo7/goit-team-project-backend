@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "./bin/server.js",
+
+      "use": "node ./index.mjs"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.index.mjs)",
+      "dest": "index.mjs"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
-import { DateTime } from 'luxon';
-import { bookStatus } from '../../helpers/constants.js';
-import { planningServices } from '../../services/index.js';
+const { DateTime } = require('luxon');
+const { bookStatus } = require('../../helpers/constants');
+const { planningServices } = require('../../services');
 
 const addReadPages = async (req, res, next) => {
   try {
@@ -36,16 +36,6 @@ const addReadPages = async (req, res, next) => {
 
       const currentBook = await planningServices.getCurrentBook(training.books[i]);
 
-      // if (currentBook.id === checkedBookId.id) {
-      //   book = currentBook;
-      //   if (currentBook.totalPages <= currentBook.readPages) {
-      //     currentBook.readPages = currentBook.totalPages;
-      //     currentBook.status = DONE;
-
-      //     book = await currentBook.save();
-      //     continue;
-      //   }
-      // }
       book = currentBook;
       if (currentBook?.totalPages <= currentBook?.readPages) {
         currentBook.status = DONE;
@@ -58,7 +48,7 @@ const addReadPages = async (req, res, next) => {
       training.totalReadPages += pages;
       await training.save();
 
-      if (currentBook?.readPages >= currentBook?.totalPages) {
+      if (currentBook.readPages >= currentBook.totalPages) {
         diff = currentBook.readPages - currentBook.totalPages;
         currentBook.readPages = currentBook.totalPages;
         currentBook.status = DONE;
@@ -139,4 +129,4 @@ const getTrainingResp = (res, message, book, trainingStage) => {
   });
 };
 
-export { addReadPages };
+module.exports = addReadPages;

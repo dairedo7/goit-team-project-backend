@@ -1,6 +1,6 @@
-import { requestError } from '../../helpers/requestError.js';
+const { requestError } = require('../../helpers/requestError');
 
-export const removePlanning = async (req, res) => {
+const removePlanning = async (req, res) => {
   const { planningId: id } = req.params;
   const user = req.user;
   user.planning = [];
@@ -14,3 +14,5 @@ export const removePlanning = async (req, res) => {
     message: 'Planning has been deleted',
   });
 };
+
+module.exports = removePlanning;

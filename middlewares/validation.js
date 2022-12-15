@@ -1,12 +1,13 @@
 const validation = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      error.status = 400;
-      next(error);
+    return (req, res, next) => {
+        const {error} = schema.validate(req.body);
+        if(error) {
+          error.status = 400;
+          next(error);
+        }
+        next();
     }
-    next();
-  };
-};
 
-export { validation };
+}
+
+module.exports = validation;

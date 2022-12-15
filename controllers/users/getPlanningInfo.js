@@ -1,15 +1,13 @@
-import { planningServices } from '../../services/index.js';
-import { httpCode } from '../../helpers/constants.js';
-const { NOT_FOUND } = httpCode;
+const { planningServices } = require('../../services');
+const {
+  httpCode: { NOT_FOUND },
+} = require('../../helpers/constants');
 
-export const getPlanningInfo = async (req, res) => {
+const getPlanningInfo = async (req, res) => {
   const user = req.user;
   try {
     const planningBooks = await planningServices.getPlanningBooks(user.planning);
 
-    if (!planningBooks) {
-      res;
-    }
     const books = await planningServices.getActiveBooks(user.planning);
 
     const planning = await planningServices.getPlanning(user.planning);
@@ -30,8 +28,11 @@ export const getPlanningInfo = async (req, res) => {
       },
     });
   } catch (error) {
+    // eslint-disable-next-line no-ex-assign
     error = new Error(`${NOT_FOUND}: No active planning found`);
     error.status = NOT_FOUND;
     throw error;
   }
 };
+
+module.exports = getPlanningInfo;

@@ -1,7 +1,7 @@
-import { bookServices } from '../../services/index.js';
-import { requestError } from '../../helpers/requestError.js';
+const { bookServices } = require('../../services');
+const { requestError } = require('../../helpers/requestError');
 
-export const updateBook = async (req, res) => {
+const updateBook = async (req, res) => {
   const { bookId } = req.body;
 
   const result = await bookServices.updateBook(bookId, req.body);
@@ -11,3 +11,5 @@ export const updateBook = async (req, res) => {
   }
   res.json(result);
 };
+
+module.exports = updateBook;

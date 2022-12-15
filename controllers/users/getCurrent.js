@@ -1,6 +1,6 @@
 // const { User } = require('../../models');
 
-export const getCurrent = async ({ user }, res) => {
+const getCurrent = async ({ user }, res) => {
   res.json({
     status: 'success',
     code: 200,
@@ -9,3 +9,5 @@ export const getCurrent = async ({ user }, res) => {
     },
   });
 };
+
+module.exports = getCurrent;

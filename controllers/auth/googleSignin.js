@@ -1,9 +1,8 @@
-import jwt from 'jsonwebtoken';
-import { User } from '../../models/index.js';
-
+const jwt = require('jsonwebtoken');
+const { User } = require('../../models');
 const { SECRET_KEY } = process.env;
 
-export const googleSignin = async (req, res, next) => {
+const googleSignin = async (req, res, next) => {
   try {
     const token = req.params.token;
 
@@ -41,3 +40,5 @@ export const googleSignin = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports = googleSignin;

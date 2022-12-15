@@ -1,17 +1,17 @@
-import express from 'express';
-import { wrapper, auth } from '../../middlewares/index.js';
-import { startPlan, addReadPages, removePlanning, getPlanningInfo, getCurrentStatus } from '../../controllers/index.js';
+const express = require('express');
+const { wrapper, auth } = require('../../middlewares');
+const { startPlan, readPages, removePlanning, getPlanningInfo, getCurrent } = require('../../controllers');
 
-const apiUsers = express.Router();
+const router = express.Router();
 
-apiUsers.get('/', auth, wrapper(getCurrentStatus));
+router.get('/', auth, wrapper(getCurrent));
 
-apiUsers.get('/planning', auth, wrapper(getPlanningInfo));
+router.get('/planning', auth, wrapper(getPlanningInfo));
 
-apiUsers.post('/planning', auth, wrapper(startPlan));
+router.post('/planning', auth, wrapper(startPlan));
 
-apiUsers.patch('/planning', auth, wrapper(addReadPages));
+router.patch('/planning', auth, wrapper(readPages));
 
-apiUsers.delete('/:planningId', auth, wrapper(removePlanning));
+router.delete('/:planningId', auth, wrapper(removePlanning));
 
-export { apiUsers };
+module.exports = router;

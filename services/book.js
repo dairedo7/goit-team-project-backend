@@ -1,4 +1,4 @@
-import { Book, User } from '../models/index.js';
+const { Book, User } = require('../models');
 
 const addBook = async (book) => {
   const books = await Book.create({ ...book });
@@ -20,9 +20,4 @@ const removeBook = async (id) => {
   return removedBook;
 };
 
-export const bookServices = {
-  addBook,
-  getUserBooks,
-  removeBook,
-  updateBook,
-};
+module.exports = { addBook, getUserBooks, removeBook, updateBook };

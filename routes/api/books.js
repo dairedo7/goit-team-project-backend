@@ -1,19 +1,20 @@
-import express from 'express';
-import { ctrl } from '../../controllers/books/index.js';
-import { getCurrentStatus } from '../../controllers/index.js';
-import { validation, validateId, auth, wrapper } from '../../middlewares/index.js';
-import { joiBookSchema, joiBookUpdateSchema } from '../../models/index.js';
+const express = require('express');
 
-const apiBooks = express.Router();
+const ctrl = require('../../controllers/books');
+const { getBookStatus } = require('../../controllers');
+const { validation, validateId, auth, wrapper } = require('../../middlewares');
+const { joiBookSchema, joiBookUpdateSchema } = require('../../models');
 
-apiBooks.get('/', auth, wrapper(ctrl.getBooks));
+const router = express.Router();
 
-apiBooks.post('/', auth, validation(joiBookSchema), wrapper(ctrl.addBook));
+router.get('/', auth, wrapper(ctrl.getBooks));
 
-apiBooks.get('/get-status/:status', auth, wrapper(getCurrentStatus));
+router.post('/', auth, validation(joiBookSchema), wrapper(ctrl.addBook));
 
-apiBooks.put('/', auth, validation(joiBookUpdateSchema), wrapper(ctrl.updateBook));
+router.get('/get-status/:status', auth, wrapper(getBookStatus));
 
-apiBooks.delete('/:bookId', auth, validateId, wrapper(ctrl.removeBook));
+router.put('/', auth, validation(joiBookUpdateSchema), wrapper(ctrl.updateBook));
 
-export { apiBooks };
+router.delete('/:bookId', auth, validateId, wrapper(ctrl.removeBook));
+
+module.exports = router;

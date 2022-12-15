@@ -1,7 +1,7 @@
-import { userServices } from '../../services/index.js';
-import Unauthorized from 'http-errors';
+const { userServices } = require('../../services');
+const { Unauthorized } = require('http-errors');
 
-export const signOut = async (req, res) => {
+const signOut = async (req, res) => {
   let { _id, token } = req.user;
   console.log(_id);
 
@@ -13,3 +13,5 @@ export const signOut = async (req, res) => {
 
   res.json({ status: 'success', code: 204, message: 'The user was successfully logged out' });
 };
+
+module.exports = signOut;

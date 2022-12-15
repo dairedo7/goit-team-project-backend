@@ -1,8 +1,7 @@
-import queryString from 'query-string';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
-
-import { userServices } from '../../services/index.js';
+const queryString = require('query-string');
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
+const { userServices } = require('../../services');
 
 const { SECRET_KEY } = process.env;
 
@@ -61,4 +60,4 @@ const googleRedirect = async (req, res) => {
   return res.redirect(`${process.env.FRONTEND_URL}?token=${token}`);
 };
 
-export { googleAuth, googleRedirect };
+module.exports = { googleAuth, googleRedirect };

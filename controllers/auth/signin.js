@@ -1,15 +1,11 @@
-import Unauthorized from 'http-errors';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { userServices } from '../../services/index.js';
+const { Unauthorized } = require('http-errors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { userServices } = require('../../services');
 
-import dotenv from 'dotenv';
-dotenv.config();
+const { SECRET_KEY } = process.env;
 
-const { env: SECRET_KEY } = process;
-
-// console.log(SECRET_KEY);
-export const signIn = async (req, res) => {
+const signIn = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await userServices.findUserByEmail(email);
@@ -29,12 +25,7 @@ export const signIn = async (req, res) => {
   const payload = {
     id: user._id,
   };
-  let Key = '';
-  ({ SECRET_KEY: Key } = SECRET_KEY);
-
-  console.log('key', Key);
-
-  const token = jwt.sign(payload, Key, { expiresIn: '30d' });
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
 
   await userServices.findUserAndUpdate(user._id, token);
   res.json({
@@ -46,3 +37,5 @@ export const signIn = async (req, res) => {
     },
   });
 };
+
+module.exports = signIn;

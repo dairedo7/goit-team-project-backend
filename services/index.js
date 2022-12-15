@@ -1,5 +1,5 @@
-import { userServices } from './user.js';
-import { bookServices } from './book.js';
-import { planningServices } from './planning.js';
+const userServices = require('./user');
+const bookServices = require('./book');
+const planningServices = require('./planning');
 
-export { userServices, bookServices, planningServices };
+module.exports = { userServices, bookServices, planningServices };

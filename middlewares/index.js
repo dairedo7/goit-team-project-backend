@@ -1,6 +1,11 @@
-import { validation } from './validation.js';
-import { auth } from './auth.js';
-import { wrapper } from './wrapper.js';
-import { validateId } from './validateId.js';
+const validation = require('./validation');
+const auth = require('./auth');
+const wrapper = require('./wrapper');
+const validateId = require('./validateId');
 
-export { validation, auth, wrapper, validateId };
+module.exports = {
+  validation,
+  auth,
+  wrapper,
+  validateId,
+};

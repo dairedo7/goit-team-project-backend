@@ -1,5 +1,5 @@
-import { isValidObjectId } from 'mongoose';
-import NotFound from 'http-errors';
+const { isValidObjectId } = require('mongoose');
+const { NotFound } = require('http-errors');
 
 const validateId = (req, res, next) => {
   const { bookId: id } = req.params;
@@ -11,4 +11,4 @@ const validateId = (req, res, next) => {
   next();
 };
 
-export { validateId };
+module.exports = validateId;

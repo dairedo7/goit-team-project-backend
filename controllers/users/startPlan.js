@@ -1,8 +1,8 @@
 const { Planning } = require('../../models');
-const { DateTime } = require('luxon');
+const luxon = require('luxon');
 const { bookStatus } = require('../../helpers/constants');
 const { planningServices } = require('../../services');
-
+const { DateTime } = luxon;
 const startPlan = async (req, res, next) => {
   try {
     const { startDate, endDate, books } = req.body;

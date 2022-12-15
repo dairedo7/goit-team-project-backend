@@ -4,15 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node ./index.mjs",
-    "start:dev": "cross-env NODE_ENV=development nodemon ./index.mjs",
+    "start": "node ./index.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./index.js",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
     "axios": "^0.27.2",
-    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "bson-objectid": "^2.0.3",
     "cors": "2.8.5",
     "dotenv": "^16.0.2",

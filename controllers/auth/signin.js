@@ -1,6 +1,6 @@
 import Unauthorized from 'http-errors';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { userServices } from '../../services/index.js';
 
 import dotenv from 'dotenv';

@@ -4,7 +4,7 @@ import { userServices } from '../../services/index.js';
 
 const { SECRET_KEY } = process.env;
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const signUp = async (req, res) => {
   const { name, email, password } = req.body;

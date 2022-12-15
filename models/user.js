@@ -1,5 +1,5 @@
-const { Schema, SchemaTypes, model } = require('mongoose');
-const Joi = require('joi');
+import Joi from 'joi';
+import { Schema, SchemaTypes, model } from 'mongoose';
 
 const emailRegexp = /^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/;
 
@@ -59,8 +59,4 @@ const joiLoginSchema = Joi.object({
 
 const User = model('user', userSignUpSchema);
 
-module.exports = {
-  User,
-  joiUserSchema,
-  joiLoginSchema,
-};
+export { User, joiUserSchema, joiLoginSchema };

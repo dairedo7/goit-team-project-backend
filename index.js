@@ -1,11 +1,14 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+import { mongoose } from 'mongoose';
+import { app } from './app.js';
+// require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 // const path = require("path");
-const app = require('./app');
+// const app = require('../app');
 
 const { DB_HOST } = process.env;
 
-const port = 3030;
+const port = process.env.PORT || 3030;
 
 // View engine
 app.set('view engine', 'ejs');
@@ -19,10 +22,8 @@ mongoose
     console.log(port);
     app.listen(port || 3000); // Render the starting page
     app.get('/', function (req, res) {
-      res.send('The API has been deployed');
-      // res.render('views/link');
+      res.render('views/link');
     });
-
     // app.use("/link", (req, res) => {
     //   res.sendFile(path.join(__dirname, "../../public/link.html"));
     // });

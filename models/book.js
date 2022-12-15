@@ -1,6 +1,6 @@
-const Joi = require('joi');
-const { Schema, model, SchemaTypes } = require('mongoose');
-const { bookStatus } = require('../helpers/constants');
+import Joi from 'joi';
+import { Schema, model, SchemaTypes } from 'mongoose';
+import { bookStatus } from '../helpers/constants.js';
 
 const bookSchema = new Schema(
   {
@@ -73,8 +73,4 @@ const joiBookUpdateSchema = Joi.object({
 
 const Book = model('book', bookSchema);
 
-module.exports = {
-  joiBookSchema,
-  joiBookUpdateSchema,
-  Book,
-};
+export { joiBookSchema, joiBookUpdateSchema, Book };

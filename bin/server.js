@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+import { mongoose } from 'mongoose';
+import { app } from '../app.js';
+// require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 // const path = require("path");
-const app = require('../app');
+// const app = require('../app');
 
 const { DB_HOST } = process.env;
 

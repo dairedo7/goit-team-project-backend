@@ -1,7 +1,7 @@
-const { bookStatus } = require('../../helpers/constants');
-const { bookServices } = require('../../services');
+import { bookStatus } from '../../helpers/constants.js';
+import { bookServices } from '../../services/index.js';
 
-const getCurrent = async (req, res, next) => {
+const getCurrentStatus = async (req, res, next) => {
   const { PLAN, READ, DONE } = bookStatus;
 
   const user = req.user;
@@ -46,4 +46,4 @@ const getCurrent = async (req, res, next) => {
   });
 };
 
-module.exports = getCurrent;
+export { getCurrentStatus };

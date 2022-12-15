@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { httpCode } = require('../helpers/constants');
+import Joi from 'joi';
+import { httpCode } from '../helpers/constants';
 
 const schemaUpdateResume = Joi.object({
   rating: Joi.number().integer().max(5).optional(),
@@ -19,6 +19,8 @@ const validate = (schema, body, next) => {
   next();
 };
 
-module.exports.validateUpdateResume = (req, _res, next) => {
+const validateUpdateResume = (req, _res, next) => {
   return validate(schemaUpdateResume, req.body, next);
 };
+
+export { validateUpdateResume };

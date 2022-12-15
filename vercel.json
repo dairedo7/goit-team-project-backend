@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "./index.js",
+      "src": "./app.js",
       "use": "@now/node"
     }
   ],
@@ -10,7 +10,7 @@
     { "handle": "filesystem" },
     {
       "src": "/.*",
-      "dest": "./index.js"
+      "dest": "./app.js"
     }
   ]
 }

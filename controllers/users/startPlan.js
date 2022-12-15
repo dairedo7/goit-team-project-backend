@@ -1,14 +1,14 @@
-const { Planning } = require('../../models');
 const luxon = require('luxon');
+const { Planning } = require('../../models');
 const { bookStatus } = require('../../helpers/constants');
 const { planningServices } = require('../../services');
-const { DateTime } = luxon;
+
 const startPlan = async (req, res, next) => {
   try {
     const { startDate, endDate, books } = req.body;
     const { READ } = bookStatus;
     const user = req.user;
-
+    const { DateTime } = luxon;
     const startTime = startDate.split('-');
     const endTime = endDate.split('-');
     const startDateObjArr = DateTime.local(Number(startTime[0]), Number(startTime[1]), Number(startTime[2]));

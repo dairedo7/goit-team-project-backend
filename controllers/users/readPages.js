@@ -1,5 +1,4 @@
 const luxon = require('luxon');
-const { DateTime } = luxon;
 const { bookStatus } = require('../../helpers/constants');
 const { planningServices } = require('../../services');
 
@@ -88,6 +87,7 @@ const addReadPages = async (req, res, next) => {
     }
 
     const currentTime = date.split('-');
+    const { DateTime } = luxon;
     const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
     date = currentDate.toFormat('yyyy-LL-dd');
 

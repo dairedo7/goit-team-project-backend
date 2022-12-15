@@ -1,4 +1,5 @@
-const { DateTime } = require('luxon');
+const luxon = require('luxon');
+const { DateTime } = luxon;
 const { bookStatus } = require('../../helpers/constants');
 const { planningServices } = require('../../services');
 

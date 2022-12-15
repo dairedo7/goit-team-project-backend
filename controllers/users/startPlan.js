@@ -1,116 +1,142 @@
-import { Planning } from '../../models/index.js';
 import { DateTime } from 'luxon';
 import { bookStatus } from '../../helpers/constants.js';
 import { planningServices } from '../../services/index.js';
 
-export const startPlan = async (req, res, next) => {
+const addReadPages = async (req, res, next) => {
   try {
-    const { startDate, endDate, books } = req.body;
-    const { READ } = bookStatus;
     const user = req.user;
 
-    const startTime = startDate.split('-');
-    const endTime = endDate.split('-');
-    const startDateObjArr = DateTime.local(Number(startTime[0]), Number(startTime[1]), Number(startTime[2]));
-    const endDateObjArr = DateTime.local(Number(endTime[0]), Number(endTime[1]), Number(endTime[2]));
-    const duration = endDateObjArr.diff(startDateObjArr, 'days').toObject().days;
-
-    if (!duration || duration < 1) {
-      return res.status(400).json({
-        status: 'error',
-        code: 400,
-        message: 'wrong dates, use YYYY-MM-DD format or select current date',
-      });
-    }
-
-    const selectedBooks = [];
-    let numberOfPages = 0;
-
-    for (let i = 0; i < books.length; i++) {
-      const book = await planningServices.getCurrentBook(books[i]);
-
-      if (!book || !user?.books.includes(book?._id)) {
-        return res.status(400).json({
-          status: 'error',
-          code: 400,
-          message: 'wrong book id',
-        });
-      }
-
-      if (book.readPages !== 0) {
-        return res.status(400).json({
-          status: 'error',
-          code: 400,
-          message: "you can't add book that you've already read",
-        });
-      }
-
-      numberOfPages += book.totalPages;
-      book.status = READ;
-      book.save();
-      const { _id, title, author, year, status, totalPages, readPages, review, rating } = book;
-
-      const validateBook = {
-        _id,
-        title,
-        author,
-        year,
-        status,
-        totalPages,
-        readPages,
-        review,
-        rating,
-      };
-
-      selectedBooks.push(validateBook);
-    }
-
-    const pagesPerDay = Math.ceil(numberOfPages / duration);
+    let { date, pages } = req.body;
+    const { DONE } = bookStatus;
 
     const training = await planningServices.getActivePlanning(user.planning);
 
-    if (training) {
-      return res.status(400).json({
+    if (!training) {
+      return res.status(403).json({
         status: 'error',
-        code: 400,
-        message: 'you already have active planning',
+        code: 403,
+        message: 'no active planning',
       });
     }
 
-    const createTraining = await Planning.create({
-      startDate,
-      endDate,
-      duration,
-      books,
-      status: 'read',
-      pagesPerDay,
-      booksToRead: selectedBooks,
-      totalPages: numberOfPages,
-    });
+    if (!pages) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'invalid pages value',
+      });
+    }
 
-    user.planning = createTraining._id;
-    user.planning.push(createTraining);
+    let book = null;
+    let diff = 0;
+    let currentIteration = 0;
 
-    await user.save();
-    await createTraining.save();
+    for (let i = 0; i < training.books.length; i++) {
+      currentIteration = i;
 
-    return res.status(201).json({
-      status: 'success',
-      code: 201,
-      data: {
-        _id: createTraining._id,
-        startDate: createTraining.startDate,
-        endDate: createTraining.endDate,
-        duration: createTraining.duration,
-        status: createTraining.status,
-        booksToRead: selectedBooks,
-        pagesPerDay: createTraining.pagesPerDay,
-        totalPages: createTraining.totalPages,
-        readPages: createTraining.readPages,
-        results: createTraining.results,
-      },
-    });
+      const currentBook = await planningServices.getCurrentBook(training.books[i]);
+
+      // if (currentBook.id === checkedBookId.id) {
+      //   book = currentBook;
+      //   if (currentBook.totalPages <= currentBook.readPages) {
+      //     currentBook.readPages = currentBook.totalPages;
+      //     currentBook.status = DONE;
+
+      //     book = await currentBook.save();
+      //     continue;
+      //   }
+      // }
+      book = currentBook;
+      if (currentBook?.totalPages <= currentBook?.readPages) {
+        currentBook.status = DONE;
+        book = await currentBook.save();
+        continue;
+      }
+
+      currentBook.readPages += pages;
+      book = await currentBook.save();
+      training.totalReadPages += pages;
+      await training.save();
+
+      if (currentBook?.readPages >= currentBook?.totalPages) {
+        diff = currentBook.readPages - currentBook.totalPages;
+        currentBook.readPages = currentBook.totalPages;
+        currentBook.status = DONE;
+        book = await currentBook.save();
+        // res json response object
+
+        while (diff !== 0 && currentIteration < training.books.length) {
+          currentIteration++;
+          if (currentIteration < training.books.length) {
+            const nextBook = await planningServices.getCurrentBook(training.books[currentIteration]);
+            nextBook.readPages += diff;
+            book = await nextBook.save();
+
+            if (nextBook.readPages > nextBook.totalPages) {
+              diff = nextBook.readPages - nextBook.totalPages;
+              nextBook.readPages = nextBook.totalPages;
+              nextBook.status = DONE;
+              book = await nextBook.save();
+            } else {
+              diff = 0;
+            }
+          }
+        }
+      }
+
+      break;
+    }
+
+    const currentTraining = await planningServices.getActivePlanning(user.planning);
+    if (training.totalReadPages >= currentTraining.totalPages) {
+      await planningServices.removeById(training._id);
+      user.planning = [];
+
+      await user.save();
+      getTrainingResp(res, 'Plan finished', book, currentTraining);
+    }
+
+    const currentTime = date.split('-');
+    const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
+    date = currentDate.toFormat('yyyy-LL-dd');
+
+    training.results.push({ date, pagesCount: pages });
+    await training.save();
+
+    const upTraining = await planningServices.getUpdatedTraning(user.planning);
+
+    if (book.readPages === book.totalPages) {
+      getTrainingResp(res, 'Book finished', book, upTraining);
+    }
+    if (training.totalReadPages !== training.totalPages) {
+      getTrainingResp(res, 'Pages added', book, upTraining);
+    }
   } catch (err) {
     next(err);
   }
 };
+
+const getTrainingResp = (res, message, book, trainingStage) => {
+  return res.status(200).json({
+    status: 'success',
+    message: `${message}`,
+    code: 200,
+    data: {
+      book,
+      planning: {
+        _id: trainingStage._id,
+        start: trainingStage.startDate,
+        end: trainingStage.endDate,
+        duration: trainingStage.duration,
+        pagesPerDay: trainingStage.pagesPerDay,
+        totalPages: trainingStage.totalPages,
+        status: trainingStage.books.status,
+        totalReadPages: trainingStage.totalReadPages,
+        books: trainingStage.books,
+        results: trainingStage.results,
+      },
+    },
+  });
+};
+
+export { addReadPages };

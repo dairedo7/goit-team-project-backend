@@ -11,14 +11,22 @@ const apiBooks = require('./routes/api/books');
 
 const app = express();
 
+// app.use((req, res, next) => {
+//   if (req.protocol === 'http') {
+//     return res.redirect(301, `https://${req.headers.host}${req.url}`);
+//   }
+
+//   next();
+// });
+
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/auth', apiAuth);
-app.use('/api/user', apiUsers);
+app.use('/auth', apiAuth);
+app.use('/user', apiUsers);
 app.use('/book', apiBooks);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

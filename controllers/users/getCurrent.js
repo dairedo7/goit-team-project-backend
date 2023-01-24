@@ -1,5 +1,3 @@
-// const { User } = require('../../models');
-
 const getCurrent = async ({ user }, res) => {
   res.json({
     status: 'success',

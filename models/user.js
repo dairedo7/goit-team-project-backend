@@ -22,6 +22,7 @@ const userSignUpSchema = Schema(
     name: {
       type: String,
       required: [true, 'Name is required'],
+      unique: false,
     },
     books: [
       {

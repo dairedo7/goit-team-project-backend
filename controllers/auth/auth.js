@@ -1,6 +1,7 @@
 const queryString = require('query-string');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+
 const { userServices } = require('../../services');
 
 const { SECRET_KEY } = process.env;
@@ -22,17 +23,19 @@ const googleRedirect = async (req, res) => {
   const urlObj = new URL(fullUrl);
   const urlParams = queryString.parse(urlObj.search);
   const code = urlParams.code;
+
   const tokenData = await axios({
     url: `https://oauth2.googleapis.com/token`,
     method: 'post',
     data: {
       client_id: process.env.GOOGLE_CLIENT_ID,
       client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${process.env.BASE_URL}/auth/google-redirect`,
+      redirect_uri: `${process.env.BASE_URL}auth/google-redirect`,
       grant_type: 'authorization_code',
       code,
     },
   });
+
   const userData = await axios({
     url: 'https://www.googleapis.com/oauth2/v2/userinfo',
     method: 'get',
@@ -45,6 +48,7 @@ const googleRedirect = async (req, res) => {
   const name = userData.data.name;
 
   let user = await userServices.findUserByEmail(email);
+
   const password = SECRET_KEY;
 
   if (!user) {
@@ -56,8 +60,7 @@ const googleRedirect = async (req, res) => {
   };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '30d' });
   await userServices.findUserById(user._id, token);
-
-  return res.redirect(`${process.env.FRONTEND_URL}?token=${token}`);
+  return res.redirect(`${process.env.FRONTEND_URL}/auth?token=${token}`);
 };
 
 module.exports = { googleAuth, googleRedirect };

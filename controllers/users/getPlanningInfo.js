@@ -10,7 +10,7 @@ const getPlanningInfo = async (req, res) => {
 
     const books = await planningServices.getActiveBooks(user.planning);
 
-    const planning = await planningServices.getPlanning(user.planning);
+    const planning = await planningServices.getActivePlanning(user.planning);
 
     if (!planningBooks || !planning) {
       const error = new Error({ message: 'Not found' });

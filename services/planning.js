@@ -1,4 +1,4 @@
-const { Planning, Book } = require("../models");
+const { Planning, Book } = require('../models');
 
 const getPlanningBooks = async (planning) => {
   const { books } = await Planning.findOne({ _id: planning });
@@ -6,13 +6,8 @@ const getPlanningBooks = async (planning) => {
 };
 
 const getActiveBooks = async (planning) => {
-  const { books } = await Planning.findOne({ _id: planning }).populate("books");
+  const { books } = await Planning.findOne({ _id: planning }).populate('books');
   return books;
-};
-
-const getPlanning = async (planning) => {
-  const planningDets = await Planning.findOne({ _id: planning });
-  return planningDets;
 };
 
 const getCurrentBook = async (book) => {
@@ -23,7 +18,7 @@ const getCurrentBook = async (book) => {
 const getActivePlanning = async (planning) => {
   const training = await Planning.findOne({
     _id: planning,
-  }).populate("books");
+  }).populate('books');
   return training;
 };
 
@@ -31,19 +26,10 @@ const removeById = async (id) => {
   return await Planning.findByIdAndRemove(id);
 };
 
-const getUpdatedTraning = async (planning) => {
-  const upTraining = await Planning.findOne({
-    _id: planning,
-  }).populate("books");
-  return upTraining;
-};
-
 module.exports = {
   getPlanningBooks,
   getActiveBooks,
-  getPlanning,
   getCurrentBook,
   getActivePlanning,
   removeById,
-  getUpdatedTraning,
 };

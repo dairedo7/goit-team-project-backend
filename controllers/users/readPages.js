@@ -53,7 +53,6 @@ const addReadPages = async (req, res, next) => {
         currentBook.readPages = currentBook.totalPages;
         currentBook.status = DONE;
         book = await currentBook.save();
-        // res json response object
 
         while (diff !== 0 && currentIteration < training.books.length) {
           currentIteration++;
@@ -77,15 +76,6 @@ const addReadPages = async (req, res, next) => {
       break;
     }
 
-    const currentTraining = await planningServices.getActivePlanning(user.planning);
-    if (training.totalReadPages >= currentTraining.totalPages) {
-      await planningServices.removeById(training._id);
-      user.planning = [];
-
-      await user.save();
-      getTrainingResp(res, 'Plan finished', book, currentTraining);
-    }
-
     const currentTime = date.split('-');
     const currentDate = DateTime.local(Number(currentTime[0]), Number(currentTime[1]), Number(currentTime[2]));
     date = currentDate.toFormat('yyyy-LL-dd');
@@ -93,13 +83,20 @@ const addReadPages = async (req, res, next) => {
     training.results.push({ date, pagesCount: pages });
     await training.save();
 
-    const upTraining = await planningServices.getUpdatedTraning(user.planning);
+    const currentTraining = await planningServices.getActivePlanning(user.planning);
+    if (training.totalReadPages >= currentTraining.totalPages) {
+      await planningServices.removeById(training._id);
+      user.planning = [];
 
-    if (book.readPages === book.totalPages) {
-      getTrainingResp(res, 'Book finished', book, upTraining);
-    }
-    if (training.totalReadPages !== training.totalPages) {
-      getTrainingResp(res, 'Pages added', book, upTraining);
+      console.log(currentTraining);
+
+      await user.save();
+      getTrainingResp(res, 'Plan finished', book, currentTraining);
+    } else if (book.readPages === book.totalPages) {
+      getTrainingResp(res, 'Book finished', book, currentTraining);
+    } else if (training.totalReadPages !== training.totalPages) {
+      console.log(currentTraining);
+      getTrainingResp(res, 'Pages added', book, currentTraining);
     }
   } catch (err) {
     next(err);

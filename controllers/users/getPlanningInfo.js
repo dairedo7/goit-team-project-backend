@@ -22,7 +22,7 @@ const getPlanningInfo = async (req, res) => {
       code: 200,
       planning,
       data: {
-        books: books,
+        books,
         booksNumber: planningBooks.length,
         planningDur: planning.duration,
       },

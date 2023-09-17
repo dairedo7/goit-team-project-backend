@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-// const path = require("path");
+const path = require('path');
 const app = require('../app');
 
 const { DB_HOST } = process.env;
@@ -23,9 +23,10 @@ mongoose
       // res.render('views/link');
     });
 
-    // app.use("/link", (req, res) => {
-    //   res.sendFile(path.join(__dirname, "../../public/link.html"));
-    // });
+    app.get('/', (req, res) => {
+      console.log(__dirname);
+      res.sendFile(path.join(__dirname, '../public/link.html'));
+    });
 
     console.log('Database connection successful');
   })

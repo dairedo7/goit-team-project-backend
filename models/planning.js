@@ -7,7 +7,6 @@ const planningSchema = new Schema(
     endDate: String,
     duration: Number,
     books: [{ type: SchemaTypes.ObjectId, ref: 'book' }],
-    booksToRead: [{ type: SchemaTypes.ObjectId, ref: 'book' }],
     pagesPerDay: Number,
     results: [{ date: String, pagesCount: Number }],
     user: [{ type: SchemaTypes.ObjectId, ref: 'user' }],

@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get('/', auth, wrapper(ctrl.getBooks));
 
+router.get('/summary', auth, wrapper(ctrl.getReview));
+
 router.post('/', auth, validation(joiBookSchema), wrapper(ctrl.addBook));
 
 router.get('/get-status/:status', auth, wrapper(getBookStatus));

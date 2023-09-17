@@ -9,6 +9,7 @@ const startPlan = require('./users/startPlan');
 const readPages = require('./users/readPages');
 const googleSignin = require('./auth/googleSignin');
 const removePlanning = require('./users/removePlanning');
+const getReview = require('./books/getReview');
 
 module.exports = {
   signUp,
@@ -19,6 +20,7 @@ module.exports = {
   googleSignin,
   getCurrent,
   getBookStatus,
+  getReview,
   getPlanningInfo,
   startPlan,
   readPages,

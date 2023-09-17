@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+const path = require('path');
 const logger = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
@@ -18,6 +19,11 @@ const app = express();
 
 //   next();
 // });
+
+app.get('/', (req, res) => {
+  console.log(__dirname);
+  res.sendFile(path.join(__dirname, './public/index.html'));
+});
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 

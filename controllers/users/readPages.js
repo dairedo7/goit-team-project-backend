@@ -88,14 +88,12 @@ const addReadPages = async (req, res, next) => {
       await planningServices.removeById(training._id);
       user.planning = [];
 
-      console.log(currentTraining);
-
       await user.save();
       getTrainingResp(res, 'Plan finished', book, currentTraining);
     } else if (book.readPages === book.totalPages) {
       getTrainingResp(res, 'Book finished', book, currentTraining);
     } else if (training.totalReadPages !== training.totalPages) {
-      console.log(currentTraining);
+      console.log(currentTraining.books);
       getTrainingResp(res, 'Pages added', book, currentTraining);
     }
   } catch (err) {

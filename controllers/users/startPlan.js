@@ -84,7 +84,6 @@ const startPlan = async (req, res, next) => {
       books,
       status: 'read',
       pagesPerDay,
-      booksToRead: selectedBooks,
       totalPages: numberOfPages,
     });
 
@@ -103,7 +102,6 @@ const startPlan = async (req, res, next) => {
         endDate: createTraining.endDate,
         duration: createTraining.duration,
         status: createTraining.status,
-        booksToRead: selectedBooks,
         pagesPerDay: createTraining.pagesPerDay,
         totalPages: createTraining.totalPages,
         readPages: createTraining.readPages,
